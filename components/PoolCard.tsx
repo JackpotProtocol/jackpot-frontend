@@ -7,49 +7,53 @@ interface PoolCardProps {
 }
 
 export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
-  const poolBalance = 12500
-  const totalWinners = 8
+  // 这里暂时使用模拟数据，后续会连接真实链上数据
+  const poolBalance = 12500 // 模拟数据：$12,500
+  const totalWinners = 8 // 模拟数据：8位获奖者
 
   return (
-    <div className="bg-gray-800 bg-opacity-50 rounded-2xl p-6 border border-emerald-800 backdrop-blur-sm">
-      <div className="flex justify-between items-start mb-6">
-        <h3 className="text-xl font-semibold text-white">{title}</h3>
-        <div className="text-xs text-emerald-400 bg-emerald-900 bg-opacity-30 px-3 py-1 rounded-full border border-emerald-700">
-          {poolType === 'weekly' ? 'WEEKLY' : 'MONTHLY'}
+    <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 shadow-lg border border-gray-700">
+      <div className="flex justify-between items-start mb-4">
+        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <div className="text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
+          {poolType === 'weekly' ? 'Weekly' : 'Monthly'}
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         <div>
-          <div className="text-3xl font-bold text-emerald-400 mb-1">
+          <div className="text-3xl font-bold text-yellow-400 mb-2">
             ${poolBalance.toLocaleString()}
           </div>
-          <div className="text-emerald-300 text-sm">Prize Pool</div>
+          <div className="text-gray-400 text-sm">Current Prize Pool</div>
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-center">
           <div>
-            <div className="text-lg font-medium text-white">{totalWinners}</div>
-            <div className="text-emerald-300 text-sm">Winners</div>
+            <div className="text-lg font-semibold text-white">{totalWinners}</div>
+            <div className="text-gray-400 text-sm">Total Winners</div>
           </div>
           <div>
-            <div className="text-lg font-medium text-white">---</div>
-            <div className="text-emerald-300 text-sm">Your Chance</div>
+            <div className="text-lg font-semibold text-white">---</div>
+            <div className="text-gray-400 text-sm">Your Chance</div>
           </div>
         </div>
 
-        <div className="pt-4 border-t border-emerald-800">
+        <div className="pt-4 border-t border-gray-700">
           <div className="flex justify-between text-sm">
-            <span className="text-emerald-400">Next Draw:</span>
+            <span className="text-gray-400">Next Draw:</span>
             <span className="text-white">{nextDraw}</span>
           </div>
         </div>
 
         <button 
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium transition-colors"
-          onClick={() => alert('Feature coming soon')}
+          className="w-full bg-gradient-to-r from-yellow-500 to-red-500 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+          onClick={() => {
+            // 后续这里可以触发开奖或者查看详情
+            alert('This feature will be implemented soon!')
+          }}
         >
-          View Details
+          Check Details
         </button>
       </div>
     </div>
