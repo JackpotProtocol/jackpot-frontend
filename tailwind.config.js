@@ -8,9 +8,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // 保持原有配置，只添加绿色主题变量
-        green: {
-          450: '#10B981', // 自定义绿色
+        jackpot: {
+          gold: '#FFD700',
+          red: '#DC2626',
+          green: '#16A34A',
         }
       }
     },
