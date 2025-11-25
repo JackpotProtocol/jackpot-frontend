@@ -19,8 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientWalletProvider>
-          {/* 只修改这一行 - 使用 Tailwind 内置的绿色类 */}
-          <div className="min-h-screen bg-gradient-to-br from-green-900 to-emerald-900">
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
             {children}
           </div>
         </ClientWalletProvider>
