@@ -25,8 +25,20 @@ export default function ClientWalletProvider({ children }: { children: React.Rea
   )
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <SolanaWalletProvider wallets={wallets} autoConnect={false}>
+    <ConnectionProvider 
+      endpoint={endpoint}
+      config={{
+        commitment: 'confirmed',
+        disableRetryOnRateLimit: false,
+      }}
+    >
+      <SolanaWalletProvider 
+        wallets={wallets} 
+        autoConnect={false}
+        onError={(error) => {
+          console.error('Wallet Error:', error)
+        }}
+      >
         <WalletModalProvider>
           {children}
         </WalletModalProvider>
