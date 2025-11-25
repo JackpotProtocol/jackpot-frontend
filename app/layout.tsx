@@ -19,8 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <ClientWalletProvider>
-          {/* 改为深绿色背景，营造高级感 */}
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-emerald-900">
+          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
             {children}
           </div>
         </ClientWalletProvider>
