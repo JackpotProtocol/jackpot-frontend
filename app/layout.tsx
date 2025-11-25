@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import ClientWalletProvider from '../components/ClientWalletProvider'
+import HydrationFix from '../components/HydrationFix'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ClientWalletProvider>
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
-            {children}
-          </div>
-        </ClientWalletProvider>
+        <HydrationFix>
+          <ClientWalletProvider>
+            <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black">
+              {children}
+            </div>
+          </ClientWalletProvider>
+        </HydrationFix>
       </body>
     </html>
   )
