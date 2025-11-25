@@ -9,12 +9,11 @@ module.exports = {
     extend: {
       colors: {
         jackpot: {
-          primary: '#10B981',
-          secondary: '#059669', 
-          accent: '#34D399',
-          gold: '#F59E0B',
+          gold: '#FFD700',
+          red: '#DC2626',
+          green: '#16A34A',
         }
-      },
+      }
     },
   },
   plugins: [],
