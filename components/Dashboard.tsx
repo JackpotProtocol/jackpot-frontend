@@ -9,7 +9,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-8">
-      {/* 资金池信息 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PoolCard 
           title="Weekly Jackpot" 
@@ -23,28 +22,27 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* 用户信息 */}
       {publicKey && <UserInfo publicKey={publicKey} />}
 
       {/* 协议统计信息 */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-xl font-bold mb-4">📊 Protocol Statistics</h3>
+      <div className="bg-emerald-900 bg-opacity-50 rounded-lg p-6 border border-emerald-700">
+        <h3 className="text-xl font-bold mb-4 text-emerald-100">📊 Protocol Statistics</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-yellow-400">$---</div>
-            <div className="text-sm text-gray-400">Total Distributed</div>
+            <div className="text-2xl font-bold text-emerald-300">$---</div>
+            <div className="text-emerald-200 text-sm">Total Distributed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-green-400">---</div>
-            <div className="text-sm text-gray-400">Winners</div>
+            <div className="text-2xl font-bold text-emerald-300">---</div>
+            <div className="text-emerald-200 text-sm">Winners</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-400">---</div>
-            <div className="text-sm text-gray-400">Active Holders</div>
+            <div className="text-2xl font-bold text-emerald-300">---</div>
+            <div className="text-emerald-200 text-sm">Active Holders</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-red-400">10%</div>
-            <div className="text-sm text-gray-400">Transaction Tax</div>
+            <div className="text-2xl font-bold text-emerald-300">10%</div>
+            <div className="text-emerald-200 text-sm">Transaction Tax</div>
           </div>
         </div>
       </div>
