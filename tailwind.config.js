@@ -10,7 +10,7 @@ module.exports = {
       colors: {
         jackpot: {
           gold: '#FFD700',
-          red: '#DC2626',
+          red: '#059669',
           green: '#16A34A',
         }
       }
