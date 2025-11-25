@@ -1,29 +1,27 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-import ClientWalletProvider from '../components/ClientWalletProvider'
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-const inter = Inter({ subsets: ['latin'] })
-
-export const metadata: Metadata = {
-  title: 'Jackpot Protocol - The Perpetual Wealth Aggregator on Solana',
-  description: 'A smart contract-driven on-chain wealth aggregation protocol on Solana',
+/* 基础样式 */
+body {
+  color: rgb(255, 255, 255);
+  background: linear-gradient(to bottom, transparent, rgb(4, 47, 46)) rgb(6, 78, 59);
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        <ClientWalletProvider>
-          <div className="min-h-screen bg-gradient-to-br from-emerald-900 via-green-900 to-teal-900 wealth-pattern">
-            {children}
-          </div>
-        </ClientWalletProvider>
-      </body>
-    </html>
-  )
+/* 绿色主题样式 */
+.jackpot-gradient {
+  background: linear-gradient(135deg, #10B981 0%, #059669 50%, #047857 100%);
+}
+
+.green-glow {
+  animation: green-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes green-glow {
+  from {
+    box-shadow: 0 0 10px #10B981;
+  }
+  to {
+    box-shadow: 0 0 20px #10B981, 0 0 30px #34D399;
+  }
 }
