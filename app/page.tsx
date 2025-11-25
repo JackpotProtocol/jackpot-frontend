@@ -1,14 +1,14 @@
 'use client'
 
 import { useWallet } from '@solana/wallet-adapter-react'
-import SafeWalletConnect from '../components/SafeWalletConnect'
+import MinimalWalletConnect from '../components/MinimalWalletConnect'
 import Dashboard from '../components/Dashboard'
 
 export default function Home() {
   const { connected } = useWallet()
 
   return (
-    <main className="min-h-screen text-white">
+    <main className="min-h-screen text-white" suppressHydrationWarning>
       <div className="container mx-auto px-4 py-8">
         {/* 顶部标题和钱包连接 */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
@@ -20,7 +20,7 @@ export default function Home() {
               The Perpetual Wealth Aggregator on Solana
             </p>
           </div>
-          <SafeWalletConnect />
+          <MinimalWalletConnect />
         </div>
 
         {/* 主要内容区域 */}
@@ -35,7 +35,7 @@ export default function Home() {
                 Connect your Solana wallet to start participating in the Jackpot Protocol
               </p>
               <div className="flex justify-center">
-                <SafeWalletConnect />
+                <MinimalWalletConnect />
               </div>
             </div>
           </div>
