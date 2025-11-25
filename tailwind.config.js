@@ -1,22 +1,20 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}"
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
     extend: {
       colors: {
         jackpot: {
-          bg: "#020817",
-          card: "#020617",
-          accent: "#22c55e",
-          accentSoft: "#bbf7d0"
+          gold: '#FFD700',
+          red: '#DC2626',
+          green: '#16A34A',
         }
       }
-    }
+    },
   },
-  plugins: []
-};
-export default config;
+  plugins: [],
+}
