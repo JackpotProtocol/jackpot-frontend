@@ -8,7 +8,7 @@ import { clusterApiUrl } from '@solana/web3.js'
 import { PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets'
 
 // 导入钱包样式
-require('@solana/wallet-adapter-react-ui/styles.css')
+import '@solana/wallet-adapter-react-ui/styles.css'
 
 export function WalletProvider({ children }: { children: React.ReactNode }) {
   // Solana网络配置 - 使用 Devnet
