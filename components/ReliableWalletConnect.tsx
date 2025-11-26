@@ -13,6 +13,7 @@ const WalletMultiButton = dynamic(
         disabled
         className="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold opacity-50"
       >
+        Loading...
       </button>
     )
   }
@@ -30,8 +31,8 @@ export default function ReliableWalletConnect() {
       )}
       <WalletMultiButton 
         style={{
-          backgroundColor: '#059669',
-          backgroundImage: 'linear-gradient(to right, #059669, #dc2626)',
+          backgroundColor: '#f59e0b',
+          backgroundImage: 'linear-gradient(to right, #f59e0b, #dc2626)',
           color: 'white',
           border: 'none',
           borderRadius: '8px',
