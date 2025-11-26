@@ -43,7 +43,7 @@ export default function UserInfo({ publicKey }: UserInfoProps) {
       </div>
 
       {/* 中奖状态显示 */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-green-500 to-green-700 rounded-lg text-center hover:bg-emerald-50 transition-colors">
+      <div className="mt-6 p-4 bg-gradient-to-r from-green-500 to-green-700 rounded-lg text-center">
         <div className="text-xl font-bold">🎉 You are a Winner! 🎉</div>
         <div className="mt-2">Click the button below to claim your prize!</div>
         <button className="mt-4 bg-white text-black px-6 py-2 rounded-lg font-bold hover:bg-gray-200">
