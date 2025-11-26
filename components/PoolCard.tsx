@@ -12,7 +12,7 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
   const totalWinners = 8 // 模拟数据：8位获奖者
 
   return (
-    <div className="bg-gradient-to-br from-green-800 to-green-900 rounded-xl p-6 shadow-lg border border-green-700">
+    <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 shadow-lg border border-gray-700">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold text-white">{title}</h3>
         <div className="text-sm bg-green-300 text-black px-2 py-1 rounded-full">
