@@ -4,9 +4,6 @@ import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses';
 import { useEffect, useState } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
 
-// 导入生成的类型 - 根据您的实际文件路径调整
-import { JackpotPool } from '../target/types/jackpot_pool';
-
 interface PoolCardProps {
   title: string
   poolType: 'weekly' | 'monthly'
