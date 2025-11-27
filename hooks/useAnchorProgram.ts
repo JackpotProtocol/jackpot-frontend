@@ -5,9 +5,9 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useMemo } from 'react';
 import { JACKPOT_PROTOCOL_ADDRESSES, RPC_URL } from '../config/addresses';
 
-// 你需要IDL，这里先用pool的程序ID占位。后面贴IDL给我，我帮加。
-// 现在假设你有jackpot_pool.json在src/idl/，如果没有，跳到步骤5先提供IDL。
-import jackpotPoolIDL from '../idl/jackpot_pool.json'; // 如果没有这个文件，后面告诉我
+// 加distributor IDL
+import jackpotPoolIDL from '../idl/jackpot_pool.json';
+import jackpotDistributorIDL from '../idl/jackpot_distributor.json'; // 新加
 
 export function useAnchorProgram(programName: 'harvest' | 'swap' | 'distributor' | 'pool') {
   const wallet = useWallet();
@@ -25,7 +25,11 @@ export function useAnchorProgram(programName: 'harvest' | 'swap' | 'distributor'
         idl = jackpotPoolIDL;
         programId = JACKPOT_PROTOCOL_ADDRESSES.POOL_PROGRAM;
         break;
-      // 后面加其他合约
+      case 'distributor': // 新加
+        idl = jackpotDistributorIDL;
+        programId = JACKPOT_PROTOCOL_ADDRESSES.DISTRIBUTOR_PROGRAM;
+        break;
+      // 加其他如果需要
       default:
         return null;
     }
