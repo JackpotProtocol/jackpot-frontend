@@ -7,6 +7,19 @@ import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses'
 import { useEffect, useState } from 'react'
 import { PublicKey } from '@solana/web3.js'
 
+// 定义 distributor 账户的类型
+interface DistributorAccounts {
+  distributorConfig?: {
+    fetch: (address: PublicKey) => Promise<any>;
+  };
+  DistributorConfig?: {
+    fetch: (address: PublicKey) => Promise<any>;
+  };
+  config?: {
+    fetch: (address: PublicKey) => Promise<any>;
+  };
+}
+
 export default function Dashboard() {
   const { publicKey } = useWallet()
   const distributorProgram = useAnchorProgram('distributor');
@@ -30,24 +43,21 @@ export default function Dashboard() {
         const configAddress = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.DISTRIBUTOR_CONFIG);
         console.log('🔍 Fetching distributor config from:', configAddress.toString());
         
-        // 调试：查看可用的账户名称
-        console.log('📋 Available accounts:', Object.keys(distributorProgram.account));
+        // 使用类型断言
+        const accounts = distributorProgram.account as DistributorAccounts;
         
-        // 根据 IDL，正确的账户名称应该是 DistributorConfig
-        // 但在 TypeScript 中可能是 distributorConfig (camelCase)
         let data;
-        
-        if ('distributorConfig' in distributorProgram.account) {
-          data = await distributorProgram.account.distributorConfig.fetch(configAddress);
-          console.log('✅ Using distributorConfig');
-        } else if ('DistributorConfig' in distributorProgram.account) {
-          data = await distributorProgram.account.DistributorConfig.fetch(configAddress);
-          console.log('✅ Using DistributorConfig');
-        } else {
-          // 如果都不存在，使用类型断言
-          const accounts = distributorProgram.account as any;
+        if (accounts.distributorConfig) {
           data = await accounts.distributorConfig.fetch(configAddress);
-          console.log('✅ Using type assertion');
+          console.log('✅ Using distributorConfig');
+        } else if (accounts.DistributorConfig) {
+          data = await accounts.DistributorConfig.fetch(configAddress);
+          console.log('✅ Using DistributorConfig');
+        } else if (accounts.config) {
+          data = await accounts.config.fetch(configAddress);
+          console.log('✅ Using config');
+        } else {
+          throw new Error('No valid distributor config account found');
         }
         
         console.log('📊 Distributor config fetched:', data);
@@ -59,8 +69,6 @@ export default function Dashboard() {
       } catch (err) {
         console.error('❌ Error fetching distributor config:', err);
         setError(`Failed to fetch distributor config: ${err.message}`);
-        
-        // 出错时使用模拟数据，但不隐藏错误
         setTotalDistributed(1250000);
       } finally {
         setLoadingStats(false);
