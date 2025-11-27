@@ -1,45 +1,40 @@
 'use client'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import PoolCard from './PoolCard'
 import UserInfo from './UserInfo'
-
 export default function Dashboard() {
   const { publicKey } = useWallet()
-
   return (
     <div className="space-y-8">
       {/* 资金池信息 */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <PoolCard 
-          title="Weekly pool" 
+        <PoolCard
+          title="Weekly pool"
           poolType="weekly"
-          nextDraw="Friday 12:00 UTC"
+          nextDraw="Friday 12:00 UTC" // 链上覆盖
         />
-        <PoolCard 
-          title="Monthly pool" 
+        <PoolCard
+          title="Monthly pool"
           poolType="monthly"
-          nextDraw="Last Friday of Month"
+          nextDraw="Last Friday of Month" // 链上覆盖
         />
       </div>
-
       {/* 用户信息 */}
       {publicKey && <UserInfo publicKey={publicKey} />}
-
       {/* 协议统计信息 */}
       <div className="bg-gray-800 rounded-lg p-6">
         <h3 className="text-xl font-bold mb-4">Protocol Statistics</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-yellow-400">$---</div>
+            <div className="text-2xl font-bold text-yellow-400">$---</div> {/* 后面从distributor读total */}
             <div className="text-sm text-gray-400">Total Distributed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-green-400">---</div>
+            <div className="text-2xl font-bold text-green-400">---</div> {/* 从事件count winners */}
             <div className="text-sm text-gray-400">Winners</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-blue-400">---</div>
+            <div className="text-2xl font-bold text-blue-400">---</div> {/* 从索引器读holders */}
             <div className="text-sm text-gray-400">Active Holders</div>
           </div>
           <div>
