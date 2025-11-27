@@ -38,7 +38,7 @@ export default function ReliableWalletConnect() {
         .drawWinner()
         .accounts({
           pool: JACKPOT_PROTOCOL_ADDRESSES.POOL_CONFIG, // 用你的地址
-          triggerer: program.provider.publicKey,
+          triggerer: publicKey,
         })
         .rpc();
 
