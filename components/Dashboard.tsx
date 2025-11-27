@@ -7,17 +7,14 @@ import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses'
 import { useEffect, useState } from 'react'
 import { PublicKey } from '@solana/web3.js'
 
-// 定义 distributor 账户的类型
-interface DistributorAccounts {
-  distributorConfig?: {
-    fetch: (address: PublicKey) => Promise<any>;
-  };
-  DistributorConfig?: {
-    fetch: (address: PublicKey) => Promise<any>;
-  };
-  config?: {
-    fetch: (address: PublicKey) => Promise<any>;
-  };
+// 定义明确的错误类型
+interface CustomError extends Error {
+  message: string;
+}
+
+// 类型守卫函数
+function isError(error: unknown): error is CustomError {
+  return error instanceof Error;
 }
 
 export default function Dashboard() {
@@ -43,23 +40,15 @@ export default function Dashboard() {
         const configAddress = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.DISTRIBUTOR_CONFIG);
         console.log('🔍 Fetching distributor config from:', configAddress.toString());
         
-        // 使用类型断言
-        const accounts = distributorProgram.account as DistributorAccounts;
+        // 使用类型断言访问账户
+        const accounts = distributorProgram.account as any;
         
-        let data;
-        if (accounts.distributorConfig) {
-          data = await accounts.distributorConfig.fetch(configAddress);
-          console.log('✅ Using distributorConfig');
-        } else if (accounts.DistributorConfig) {
-          data = await accounts.DistributorConfig.fetch(configAddress);
-          console.log('✅ Using DistributorConfig');
-        } else if (accounts.config) {
-          data = await accounts.config.fetch(configAddress);
-          console.log('✅ Using config');
-        } else {
-          throw new Error('No valid distributor config account found');
+        // 先检查账户是否存在
+        if (!accounts.distributorConfig) {
+          throw new Error(`distributorConfig account not found. Available accounts: ${Object.keys(accounts)}`);
         }
         
+        const data = await accounts.distributorConfig.fetch(configAddress);
         console.log('📊 Distributor config fetched:', data);
         setConfigData(data);
         
@@ -68,7 +57,14 @@ export default function Dashboard() {
         
       } catch (err) {
         console.error('❌ Error fetching distributor config:', err);
-        setError(`Failed to fetch distributor config: ${err.message}`);
+        
+        // 安全的错误处理
+        if (isError(err)) {
+          setError(`Failed to fetch distributor config: ${err.message}`);
+        } else {
+          setError('Failed to fetch distributor config: Unknown error');
+        }
+        
         setTotalDistributed(1250000);
       } finally {
         setLoadingStats(false);
