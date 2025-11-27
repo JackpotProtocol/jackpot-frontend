@@ -1,12 +1,9 @@
 'use client'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import ReliableWalletConnect from '../components/ReliableWalletConnect'
 import Dashboard from '../components/Dashboard'
-
 export default function Home() {
   const { connected } = useWallet()
-
   return (
     <main className="min-h-screen text-white">
       <div className="container mx-auto px-4 py-8">
@@ -22,7 +19,6 @@ export default function Home() {
           </div>
           <ReliableWalletConnect />
         </div>
-
         {/* 主要内容区域 */}
         {connected ? (
           <Dashboard />
