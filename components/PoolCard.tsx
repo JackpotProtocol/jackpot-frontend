@@ -1,5 +1,4 @@
 'use client'
-import { useAnchorProgram } from '../hooks/useAnchorProgram';
 import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses';
 import { useEffect, useState } from 'react';
 import { Connection, PublicKey } from '@solana/web3.js';
