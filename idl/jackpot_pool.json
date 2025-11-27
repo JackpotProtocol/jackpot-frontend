@@ -1,0 +1,882 @@
+{
+  "address": "9F8ezXUnTAKUXqvxSUBwrZqLZuRD96kURp323GHt91hU",
+  "metadata": {
+    "name": "jackpot_pool",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "pool program for jackpot_protocol"
+  },
+  "instructions": [
+    {
+      "name": "claim_prize",
+      "docs": [
+        "领取奖励（带 Merkle 证明）—— 已升级为 Token-2022 / TokenInterface 版本"
+      ],
+      "discriminator": [
+        157,
+        233,
+        139,
+        121,
+        246,
+        62,
+        234,
+        235
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "pool_authority",
+          "docs": [
+            "pool authority PDA: [b\"pool-authority\", pool]"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault：mint & authority 均强约束到 pool"
+          ],
+          "writable": true
+        },
+        {
+          "name": "usdc_mint_account",
+          "docs": [
+            "USDC Mint（用于 decimals + transfer_checked）"
+          ]
+        },
+        {
+          "name": "winner_token_account",
+          "docs": [
+            "赢家的 USDC 账户（owner 必须等于 winner）"
+          ],
+          "writable": true
+        },
+        {
+          "name": "triggerer_token_account",
+          "docs": [
+            "触发者的 USDC 账户（owner 必须等于 pool.last_triggerer；若 last_triggerer=default，可传任意）"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "winner",
+          "type": "pubkey"
+        },
+        {
+          "name": "winner_leaf_amount",
+          "type": "u128"
+        },
+        {
+          "name": "cumulative_weight_until",
+          "type": "u128"
+        },
+        {
+          "name": "proof",
+          "type": {
+            "vec": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "draw_winner",
+      "docs": [
+        "开奖触发（社区）"
+      ],
+      "discriminator": [
+        250,
+        103,
+        118,
+        147,
+        219,
+        235,
+        169,
+        220
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "triggerer",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "fulfill_randomness",
+      "docs": [
+        "VRF 回调：只允许配置的 `vrf_coordinator`（签名者）调用"
+      ],
+      "discriminator": [
+        235,
+        105,
+        140,
+        46,
+        40,
+        88,
+        117,
+        2
+      ],
+      "accounts": [
+        {
+          "name": "vrf_caller",
+          "docs": [
+            "这里采用“签名者=vrf_coordinator”的部署形态"
+          ],
+          "signer": true
+        },
+        {
+          "name": "pool",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "randomness",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "_request_id",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "initialize_pool",
+      "docs": [
+        "初始化奖池"
+      ],
+      "discriminator": [
+        95,
+        180,
+        10,
+        172,
+        84,
+        174,
+        232,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "pool",
+          "docs": [
+            "Pool config (PDA): [b\"pool-config\", owner]"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_authority",
+          "docs": [
+            "pool authority PDA: [b\"pool-authority\", pool]"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault token account (USDC) owned by pool_authority"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pool"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint_account",
+          "docs": [
+            "Token-2022 或普通 token，统一用接口"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "pool_type",
+          "type": {
+            "defined": {
+              "name": "PoolType"
+            }
+          }
+        },
+        {
+          "name": "next_draw_time",
+          "type": "i64"
+        },
+        {
+          "name": "fee_bps_triggerer",
+          "type": "u16"
+        },
+        {
+          "name": "indexer",
+          "type": "pubkey"
+        },
+        {
+          "name": "vrf_coordinator",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "keeper_draw",
+      "docs": [
+        "Keeper 兜底开奖（超时 1 小时且无触发者奖励）"
+      ],
+      "discriminator": [
+        18,
+        43,
+        18,
+        11,
+        150,
+        67,
+        155,
+        126
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "keeper",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reset_pool",
+      "docs": [
+        "管理员复位（应急）：当卡在 Processing/WaitingForVrf 等异常状态，可手动复位到 Open"
+      ],
+      "discriminator": [
+        108,
+        172,
+        93,
+        91,
+        146,
+        8,
+        155,
+        112
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_paused",
+      "docs": [
+        "管理员暂停/恢复"
+      ],
+      "discriminator": [
+        91,
+        60,
+        125,
+        192,
+        176,
+        225,
+        166,
+        218
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "v",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "submit_snapshot",
+      "docs": [
+        "提交快照（Merkle 根、总权重、快照高度）"
+      ],
+      "discriminator": [
+        38,
+        160,
+        21,
+        51,
+        100,
+        75,
+        87,
+        198
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "pool"
+          ]
+        },
+        {
+          "name": "indexer",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "merkle_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "total_weight",
+          "type": "u128"
+        },
+        {
+          "name": "snapshot_block",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "PoolConfig",
+      "discriminator": [
+        26,
+        108,
+        14,
+        123,
+        116,
+        230,
+        129,
+        43
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "DrawRequested",
+      "discriminator": [
+        59,
+        172,
+        219,
+        42,
+        28,
+        94,
+        93,
+        75
+      ]
+    },
+    {
+      "name": "KeeperTriggered",
+      "discriminator": [
+        55,
+        111,
+        15,
+        173,
+        86,
+        36,
+        171,
+        99
+      ]
+    },
+    {
+      "name": "PrizeClaimed",
+      "discriminator": [
+        213,
+        150,
+        192,
+        76,
+        199,
+        33,
+        212,
+        38
+      ]
+    },
+    {
+      "name": "RandomFulfilled",
+      "discriminator": [
+        170,
+        214,
+        103,
+        44,
+        189,
+        212,
+        127,
+        177
+      ]
+    },
+    {
+      "name": "SnapshotSubmitted",
+      "discriminator": [
+        254,
+        45,
+        92,
+        130,
+        12,
+        79,
+        160,
+        23
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TooEarlyToDraw",
+      "msg": "Too early to draw"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidState",
+      "msg": "Invalid state for operation"
+    },
+    {
+      "code": 6002,
+      "name": "EmptySnapshot",
+      "msg": "Snapshot/total weight is empty"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidMerkleProof",
+      "msg": "Invalid Merkle proof"
+    },
+    {
+      "code": 6004,
+      "name": "EmptyVault",
+      "msg": "Vault is empty"
+    },
+    {
+      "code": 6005,
+      "name": "Arithmetic",
+      "msg": "Arithmetic error"
+    },
+    {
+      "code": 6006,
+      "name": "ProofTooLong",
+      "msg": "Proof length exceeded safe limit"
+    },
+    {
+      "code": 6007,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6008,
+      "name": "Paused",
+      "msg": "Contract paused"
+    },
+    {
+      "code": 6009,
+      "name": "NotWinner",
+      "msg": "Address is not the winner"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidRandomness",
+      "msg": "Invalid randomness"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidTime",
+      "msg": "Invalid time"
+    }
+  ],
+  "types": [
+    {
+      "name": "DrawRequested",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "triggerer",
+            "type": "pubkey"
+          },
+          {
+            "name": "requested_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "KeeperTriggered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "triggered_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "pool_type",
+            "type": {
+              "defined": {
+                "name": "PoolType"
+              }
+            }
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "merkle_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "snapshot_block",
+            "type": "u64"
+          },
+          {
+            "name": "total_weight",
+            "type": "u128"
+          },
+          {
+            "name": "next_draw_time",
+            "type": "i64"
+          },
+          {
+            "name": "state",
+            "type": "u8"
+          },
+          {
+            "name": "last_random",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "last_winning_index",
+            "type": "u128"
+          },
+          {
+            "name": "last_winner",
+            "type": "pubkey"
+          },
+          {
+            "name": "last_triggerer",
+            "type": "pubkey"
+          },
+          {
+            "name": "last_prize_amount",
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps_triggerer",
+            "type": "u16"
+          },
+          {
+            "name": "vrf_request_time",
+            "type": "i64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "indexer",
+            "type": "pubkey"
+          },
+          {
+            "name": "vrf_coordinator",
+            "type": "pubkey"
+          },
+          {
+            "name": "vrf_request_id",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PoolType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Weekly"
+          },
+          {
+            "name": "Monthly"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PrizeClaimed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner",
+            "type": "pubkey"
+          },
+          {
+            "name": "winner_share",
+            "type": "u64"
+          },
+          {
+            "name": "triggerer",
+            "type": "pubkey"
+          },
+          {
+            "name": "triggerer_share",
+            "type": "u64"
+          },
+          {
+            "name": "claimed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RandomFulfilled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "randomness",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "winning_index",
+            "type": "u128"
+          },
+          {
+            "name": "fulfilled_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SnapshotSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "merkle_root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "total_weight",
+            "type": "u128"
+          },
+          {
+            "name": "snapshot_block",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}
