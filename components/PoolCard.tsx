@@ -54,7 +54,7 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
     <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 shadow-lg border border-gray-700">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold text-white">{title}</h3>
-        <div className="text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
+        <div className="text-sm bg-green-300 text-black px-2 py-1 rounded-full">
           {poolType === 'weekly' ? 'Weekly' : 'Monthly'}
         </div>
       </div>
@@ -105,7 +105,7 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
           className={`w-full py-3 rounded-lg font-semibold transition-opacity ${
             !publicKey || triggering || !poolInfo.canTrigger
               ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-yellow-500 to-red-500 text-white hover:opacity-90'
+              : 'bg-gradient-to-r from-green-400 to-green-600 text-white hover:opacity-90'
           }`}
           onClick={() => triggerDraw(poolType)}
           disabled={!publicKey || triggering || !poolInfo.canTrigger}
