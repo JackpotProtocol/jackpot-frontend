@@ -71,7 +71,7 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
         </div>
 
         <button 
-          className="w-full bg-gradient-to-r from-green-300 to-green-700 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+          className="w-full bg-gradient-to-r from-green-400 to-green-700 text-white py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
           onClick={() => alert('Feature coming soon!')}
         >
           Check Details
