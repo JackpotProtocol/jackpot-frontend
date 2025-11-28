@@ -1,11 +1,13 @@
+// components/Dashboard.tsx
 'use client'
-
 import { useWallet } from '@solana/wallet-adapter-react'
 import PoolCard from './PoolCard'
 import UserInfo from './UserInfo'
+import { useProtocolStats } from '../hooks/useProtocolStats'
 
 export default function Dashboard() {
   const { publicKey } = useWallet()
+  const { stats, loading: statsLoading } = useProtocolStats()
 
   return (
     <div className="space-y-8">
@@ -31,19 +33,27 @@ export default function Dashboard() {
         <h3 className="text-xl font-bold mb-4">Protocol Statistics</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div>
-            <div className="text-2xl font-bold text-yellow-400">$---</div>
+            <div className="text-2xl font-bold text-yellow-400">
+              {statsLoading ? '...' : `$${(stats.totalDistributed / 1000000).toFixed(1)}M`}
+            </div>
             <div className="text-sm text-gray-400">Total Distributed</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-green-400">---</div>
+            <div className="text-2xl font-bold text-green-400">
+              {statsLoading ? '...' : stats.totalWinners}
+            </div>
             <div className="text-sm text-gray-400">Winners</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-cyan-400">---</div>
+            <div className="text-2xl font-bold text-cyan-400">
+              {statsLoading ? '...' : stats.activeHolders.toLocaleString()}
+            </div>
             <div className="text-sm text-gray-400">Active Holders</div>
           </div>
           <div>
-            <div className="text-2xl font-bold text-white-700">10%</div>
+            <div className="text-2xl font-bold text-purple-400">
+              {stats.transactionTax}%
+            </div>
             <div className="text-sm text-gray-400">Transaction Tax</div>
           </div>
         </div>
