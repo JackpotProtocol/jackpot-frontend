@@ -1,12 +1,10 @@
 // hooks/useDrawTrigger.ts
 'use client'
 import { useWallet } from '@solana/wallet-adapter-react'
-import { PublicKey, Transaction, SystemProgram } from '@solana/web3.js'
-import { Program, AnchorProvider, web3 } from '@coral-xyz/anchor'
+import { PublicKey, Transaction } from '@solana/web3.js'
 import { useConnection } from '@solana/wallet-adapter-react'
 import { useState } from 'react'
 import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses'
-import jackpotPoolIdl from '../idl/jackpot_pool.json'
 
 export function useDrawTrigger() {
   const { connection } = useConnection()
@@ -28,16 +26,6 @@ export function useDrawTrigger() {
     try {
       console.log(`🎯 Triggering ${poolType} draw...`)
 
-      // 创建 Anchor provider
-      const provider = new AnchorProvider(connection, wallet.adapter as any, {})
-      
-      // 创建程序实例
-      const program = new Program(
-        jackpotPoolIdl as any,
-        new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_PROGRAM),
-        provider
-      )
-
       // 获取奖池地址
       const poolAddress = new PublicKey(
         poolType === 'weekly' 
@@ -46,19 +34,26 @@ export function useDrawTrigger() {
       )
 
       console.log('📝 Preparing draw transaction...')
+      console.log('Pool:', poolAddress.toString())
+      console.log('Triggerer:', publicKey.toString())
 
-      // 调用 draw_winner 指令
-      const transaction = await program.methods
-        .drawWinner()
-        .accounts({
-          pool: poolAddress,
-          triggerer: publicKey,
-        })
-        .transaction()
+      // 这里简化实现，直接构建交易
+      // 在实际部署中，你需要使用正确的程序IDL和指令数据
+      const transaction = new Transaction().add({
+        keys: [
+          { pubkey: poolAddress, isSigner: false, isWritable: true },
+          { pubkey: publicKey, isSigner: true, isWritable: false },
+        ],
+        programId: new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_PROGRAM),
+        // 注意：这里需要正确的指令数据
+        // 对于 draw_winner 指令，discriminator 是 [250, 103, 118, 147, 219, 235, 169, 220]
+        data: Buffer.from([250, 103, 118, 147, 219, 235, 169, 220]) // draw_winner discriminator
+      })
 
-      // 设置计算单位价格（优先费）
+      // 设置最新区块哈希
+      const { blockhash } = await connection.getLatestBlockhash()
+      transaction.recentBlockhash = blockhash
       transaction.feePayer = publicKey
-      transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash
 
       console.log('🔄 Sending transaction...')
 
@@ -71,7 +66,7 @@ export function useDrawTrigger() {
       const confirmation = await connection.confirmTransaction(signature, 'confirmed')
       
       if (confirmation.value.err) {
-        throw new Error('Transaction failed')
+        throw new Error('Transaction failed: ' + JSON.stringify(confirmation.value.err))
       }
 
       console.log(`✅ ${poolType} draw triggered successfully!`, signature)
@@ -85,17 +80,17 @@ export function useDrawTrigger() {
       
       // 提供更友好的错误信息
       let errorMessage = err.message
-      if (err.message.includes('TooEarlyToDraw')) {
+      if (err.message?.includes('TooEarlyToDraw')) {
         errorMessage = 'Too early to trigger draw. Please wait until the scheduled time.'
-      } else if (err.message.includes('InvalidState')) {
+      } else if (err.message?.includes('InvalidState')) {
         errorMessage = 'Pool is not in a state that allows drawing.'
-      } else if (err.message.includes('Paused')) {
+      } else if (err.message?.includes('Paused')) {
         errorMessage = 'Contract is currently paused.'
-      } else if (err.message.includes('Unauthorized')) {
+      } else if (err.message?.includes('Unauthorized')) {
         errorMessage = 'Unauthorized to trigger draw.'
       }
 
-      setError(errorMessage)
+      setError(errorMessage || 'Failed to trigger draw')
     } finally {
       setTriggering(false)
     }
