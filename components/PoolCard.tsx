@@ -3,6 +3,7 @@
 import { usePoolBalance } from '../hooks/usePoolBalance'
 import { usePoolInfo } from '../hooks/usePoolInfo'
 import { useDrawTrigger } from '../hooks/useDrawTrigger'
+import { useTriggerEligibility } from '../hooks/useTriggerEligibility'
 import { useWallet } from '@solana/wallet-adapter-react'
 
 interface PoolCardProps {
@@ -14,22 +15,47 @@ interface PoolCardProps {
 export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
   const { poolBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
-  const { triggerDraw, triggering, error: triggerError } = useDrawTrigger()
+  const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
+  const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
   const { publicKey } = useWallet()
 
   const loading = balanceLoading || infoLoading
-  const error = balanceError || infoError
 
   const formatNextDrawTime = (date: Date | null) => {
-    if (!date) return nextDraw
-    return date.toLocaleString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
+    if (!date) return poolType === 'weekly' ? 'Friday 12:00 UTC' : 'Last Friday of Month'
+    
+    const now = new Date()
+    const timeDiff = date.getTime() - now.getTime()
+    const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+    
+    if (daysDiff < 0) {
+      return 'Drawing in progress...'
+    } else if (daysDiff === 0) {
+      return 'Today 12:00 UTC'
+    } else if (daysDiff === 1) {
+      return 'Tomorrow 12:00 UTC'
+    } else if (daysDiff <= 7) {
+      return `${date.toLocaleDateString('en-US', { weekday: 'long' })} 12:00 UTC`
+    } else {
+      return `${date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} 12:00 UTC`
+    }
+  }
+
+  const getTriggerButtonText = () => {
+    if (!publicKey) return 'Connect Wallet to Trigger'
+    if (triggering) return 'Triggering Draw...'
+    if (!isWithinTriggerWindow) return `Opens in ${timeUntilTrigger}`
+    return 'Trigger Draw & Earn 5%'
+  }
+
+  const getTriggerButtonColor = () => {
+    if (!publicKey || triggering || !isWithinTriggerWindow) {
+      return 'bg-gray-600 text-gray-400 cursor-not-allowed'
+    }
+    if (triggerSuccess) {
+      return 'bg-green-600 text-white cursor-not-allowed'
+    }
+    return 'bg-gradient-to-r from-yellow-500 to-red-500 text-white hover:opacity-90'
   }
 
   if (loading) {
@@ -54,14 +80,20 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
     <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 shadow-lg border border-gray-700">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-bold text-white">{title}</h3>
-        <div className="text-sm bg-green-300 text-black px-2 py-1 rounded-full">
+        <div className="text-sm bg-yellow-500 text-black px-2 py-1 rounded-full">
           {poolType === 'weekly' ? 'Weekly' : 'Monthly'}
         </div>
       </div>
 
-      {(error || triggerError) && (
+      {(balanceError || infoError || triggerError) && (
         <div className="bg-red-900 border border-red-700 rounded-lg p-2 mb-4">
-          <p className="text-red-200 text-xs">{error || triggerError}</p>
+          <p className="text-red-200 text-xs">{balanceError || infoError || triggerError}</p>
+        </div>
+      )}
+
+      {triggerSuccess && (
+        <div className="bg-green-900 border border-green-700 rounded-lg p-2 mb-4">
+          <p className="text-green-200 text-xs">🎉 Draw triggered successfully! You may receive 5% reward if you're first.</p>
         </div>
       )}
 
@@ -94,24 +126,30 @@ export default function PoolCard({ title, poolType, nextDraw }: PoolCardProps) {
             <span className="text-white">{formatNextDrawTime(poolInfo.nextDrawTime)}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-400">Status:</span>
-            <span className={`text-${poolInfo.poolState === 'open' ? 'green' : 'yellow'}-400 capitalize`}>
-              {poolInfo.poolState}
+            <span className="text-gray-400">Trigger Window:</span>
+            <span className={`text-${isWithinTriggerWindow ? 'green' : 'yellow'}-400`}>
+              {isWithinTriggerWindow ? 'OPEN' : `in ${timeUntilTrigger}`}
             </span>
           </div>
         </div>
 
+        {/* 触发按钮 */}
         <button 
-          className={`w-full py-3 rounded-lg font-semibold transition-opacity ${
-            !publicKey || triggering || !poolInfo.canTrigger
-              ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-              : 'bg-gradient-to-r from-green-400 to-green-600 text-white hover:opacity-90'
-          }`}
+          className={`w-full py-3 rounded-lg font-semibold transition-all ${getTriggerButtonColor()}`}
           onClick={() => triggerDraw(poolType)}
-          disabled={!publicKey || triggering || !poolInfo.canTrigger}
+          disabled={!publicKey || triggering || !isWithinTriggerWindow}
         >
-          {triggering ? 'Triggering...' : 'Trigger Draw'}
+          {getTriggerButtonText()}
         </button>
+
+        {/* 触发奖励信息 */}
+        <div className="text-xs text-gray-400 text-center">
+          {isWithinTriggerWindow ? (
+            <>First trigger gets 5% reward (${(poolBalance * 0.05).toLocaleString()})</>
+          ) : (
+            <>Trigger window: Friday 12:00-13:00 UTC</>
+          )}
+        </div>
 
         {poolInfo.lastWinner && (
           <div className="text-xs text-gray-400 text-center">
