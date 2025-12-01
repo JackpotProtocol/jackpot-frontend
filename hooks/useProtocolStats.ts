@@ -1,8 +1,7 @@
 // hooks/useProtocolStats.ts
 'use client'
-import { PublicKey, Connection } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
-import { JACKPOT_PROTOCOL_ADDRESSES } from '../config/addresses'
+import { fetchJackpotAPI, JACKPOT_API } from '../config/api'
 
 interface ProtocolStats {
   totalDistributed: number
@@ -16,14 +15,26 @@ export function useProtocolStats() {
     totalDistributed: 0,
     totalWinners: 0,
     activeHolders: 0,
-    transactionTax: 10 // 10% as per whitepaper
+    transactionTax: 10
   })
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // 模拟数据 - 在实际中会从链上事件中统计
+        // 从API获取真实数据
+        const snapshotData = await fetchJackpotAPI(JACKPOT_API.ENDPOINTS.LATEST_SNAPSHOT)
+        
+        const realStats: ProtocolStats = {
+          totalDistributed: 1250000, // 暂时保持模拟
+          totalWinners: 15, // 暂时保持模拟
+          activeHolders: snapshotData.data?.total_holders || 0, // 真实数据
+          transactionTax: 10
+        }
+        setStats(realStats)
+      } catch (err) {
+        console.error('Error fetching protocol stats:', err)
+        // API失败时用模拟数据
         const mockStats: ProtocolStats = {
           totalDistributed: 1250000,
           totalWinners: 15,
@@ -31,15 +42,13 @@ export function useProtocolStats() {
           transactionTax: 10
         }
         setStats(mockStats)
-      } catch (err) {
-        console.error('Error fetching protocol stats:', err)
       } finally {
         setLoading(false)
       }
     }
 
     fetchStats()
-    const interval = setInterval(fetchStats, 60000) // 1分钟刷新一次
+    const interval = setInterval(fetchStats, 60000)
     return () => clearInterval(interval)
   }, [])
 
