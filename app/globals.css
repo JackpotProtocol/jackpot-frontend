@@ -79,6 +79,25 @@
 
 /* 工具层：自定义动画和工具类 */
 @layer utilities {
+  /* 确保钱包适配器下拉菜单有最高优先级 */
+  .wallet-adapter-dropdown {
+    z-index: 9999 !important;
+    position: relative;
+  }
+  
+  .wallet-adapter-modal {
+    z-index: 9999 !important;
+  }
+  
+  .wallet-adapter-modal-wrapper {
+    z-index: 9999 !important;
+  }
+  
+  .wallet-adapter-button {
+    position: relative;
+    z-index: 100;
+  }
+  
   /* “惊喜”闪烁动画，用于重要通知或中奖提示 */
   .animate-pulse-glow {
     animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
