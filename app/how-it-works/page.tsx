@@ -167,7 +167,7 @@ export default function HowItWorks() {
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-gold flex items-center justify-center">
             <Shield className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Magical Foundations</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">🔮 Magical Foundations</h2>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8">
@@ -221,7 +221,7 @@ export default function HowItWorks() {
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple-light to-walawow-gold flex items-center justify-center">
             <TrendingUp className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Spell Component Distribution</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">📊 Spell Component Distribution</h2>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8">
