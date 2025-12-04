@@ -63,7 +63,7 @@ export default function ReliableWalletConnect() {
   )
 
   return (
-    <div className="flex flex-col items-center space-y-3">
+    <div className="flex flex-col items-center space-y-3 relative z-50">
       {/* 连接状态显示 */}
       {connected && publicKey && (
         <div className="glass-card px-4 py-2.5 rounded-xl border border-walawow-neutral-border">
