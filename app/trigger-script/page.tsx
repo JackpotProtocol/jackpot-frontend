@@ -146,7 +146,7 @@ pub mod magic_spellbook {
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-gold flex items-center justify-center">
             <BookOpen className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">📖 Magic Spell Guide</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Magic Spell Guide</h2>
         </div>
         
         <div className="flex flex-wrap gap-3 mb-8">
@@ -285,7 +285,7 @@ pub mod magic_spellbook {
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-gold to-walawow-gold-dark flex items-center justify-center">
             <Target className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">🏆 Winning Strategies</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Winning Strategies</h2>
         </div>
         
         <div className="grid md:grid-cols-2 gap-8">
@@ -337,7 +337,7 @@ pub mod magic_spellbook {
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-purple-dark flex items-center justify-center">
             <Search className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">📚 Magic Scroll Resources</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Magic Scroll Resources</h2>
         </div>
         
         <div className="grid md:grid-cols-3 gap-6">
