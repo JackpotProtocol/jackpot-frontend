@@ -1,45 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Walawow 品牌色变量 */
+  --color-walawow-purple-light: #C084FC;
+  --color-walawow-purple: #9333EA;
+  --color-walawow-purple-dark: #7C3AED;
+  --color-walawow-gold-light: #FDE68A;
+  --color-walawow-gold: #FBBF24;
+  --color-walawow-gold-dark: #D97706;
+  --color-walawow-bg: #0F0F23;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+/* 基础层：重置默认样式，应用全局字体和背景 */
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  body {
+    @apply bg-walawow-neutral-bg text-walawow-neutral-text-primary antialiased min-h-screen;
+    /* 华丽的星云渐变背景，增强沉浸感 */
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(147, 51, 234, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+  /* 为标题元素添加更富设计感的字体 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 600;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+/* 组件层：定义可复用的样式类 */
+@layer components {
+  /* 主要品牌按钮：紫色渐变 */
+  .btn-walawow {
+    @apply bg-gradient-to-r from-walawow-purple to-walawow-purple-dark text-white font-semibold py-3 px-6 rounded-xl shadow-walawow hover:shadow-walawow-lg hover:scale-[1.02] active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-walawow-purple-light focus:ring-offset-2 focus:ring-offset-walawow-neutral-bg;
+  }
+  
+  /* 强调行动按钮：金色渐变 */
+  .btn-gold {
+    @apply bg-gradient-to-r from-walawow-gold to-walawow-gold-dark text-walawow-neutral-bg font-bold py-3 px-6 rounded-xl shadow-gold hover:shadow-lg hover:scale-[1.02] active:scale-95 transition-all duration-300;
+  }
+  
+  /* 次级/轮廓按钮 */
+  .btn-outline {
+    @apply border border-walawow-purple-light text-walawow-purple-light font-medium py-2.5 px-5 rounded-lg hover:bg-walawow-purple/10 transition-colors duration-200;
+  }
+  
+  /* 毛玻璃效果卡片 */
+  .glass-card {
+    @apply bg-walawow-neutral-card/60 backdrop-blur-sm border border-walawow-neutral-border rounded-2xl shadow-xl;
+  }
+  
+  /* 华丽标题文字：紫色到金色渐变 */
+  .title-gradient {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-walawow-purple-light via-walawow-purple to-walawow-gold bg-clip-text text-transparent;
+  }
+  
+  /* 章节副标题 */
+  .section-title {
+    @apply text-xl md:text-2xl font-semibold text-walawow-neutral-text-primary border-l-4 border-walawow-gold pl-4;
+  }
+  
+  /* 用于高亮数据的标签 */
+  .data-label {
+    @apply text-sm font-medium text-walawow-neutral-text-secondary uppercase tracking-wider;
+  }
+  .data-value {
+    @apply text-2xl font-bold text-white;
+  }
 }
 
-/* 自定义 Jackpot 主题样式 */
-.jackpot-gradient {
-  background: linear-gradient(135deg, #FFD700 0%, #DC2626 50%, #16A34A 100%);
+/* 工具层：自定义动画和工具类 */
+@layer utilities {
+  /* “惊喜”闪烁动画，用于重要通知或中奖提示 */
+  .animate-pulse-glow {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* 元素悬浮动画，用于吸引注意力 */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  /* Walawow主题辉光，用于卡片或按钮 */
+  .glow-purple {
+    box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+  }
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+  }
 }
 
-.winner-glow {
-  animation: winner-glow 2s ease-in-out infinite alternate;
+/* 关键帧动画定义 */
+@keyframes pulse-glow {
+  0%, 100% { 
+    opacity: 1; 
+    box-shadow: 0 0 10px var(--color-walawow-purple-light);
+  }
+  50% { 
+    opacity: 0.8; 
+    box-shadow: 0 0 20px var(--color-walawow-purple), 0 0 30px var(--color-walawow-purple-light);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
 }
 
 @keyframes winner-glow {
   from {
-    box-shadow: 0 0 10px #FFD700;
+    box-shadow: 0 0 15px var(--color-walawow-gold);
   }
   to {
-    box-shadow: 0 0 20px #FFD700, 0 0 30px #DC2626;
+    box-shadow: 0 0 25px var(--color-walawow-gold), 0 0 40px var(--color-walawow-gold-dark);
   }
+}
+
+/* 保留并优化原有的中奖者辉光动画，调整为金色主题 */
+.winner-glow {
+  animation: winner-glow 1.5s ease-in-out infinite alternate;
 }
