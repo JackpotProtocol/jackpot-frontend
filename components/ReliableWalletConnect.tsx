@@ -116,15 +116,6 @@ export default function ReliableWalletConnect() {
           {/* 自定义按钮内容 */}
           {buttonContent}
         </WalletMultiButton>
-
-        {/* 连接提示文字 */}
-        {!connected && (
-          <div className="mt-2 text-center">
-            <p className="text-xs text-walawow-neutral-text-secondary">
-              Unlock your <span className="text-walawow-gold">WOW moments</span>
-            </p>
-          </div>
-        )}
       </div>
 
       {/* 连接后的小提示 */}
