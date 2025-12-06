@@ -16,9 +16,9 @@ const spell = await program.methods
   .rpc();`
 
   const poolAddresses = `// Magic Pool Addresses (Magic Testnet)
-const WEEKLY_MAGIC_POOL = "2wsXkzJtM7wnbotZ2sjNHiQzjSWiVHwqnackGHpWXdVQ";
-const MONTHLY_MAGIC_POOL = "Fy1begTbD5YGKYYouX8KRE2AbWQ5ADSewM1vmRXeHm3N";
-const MAGIC_PROGRAM = "9F8ezXUnTAKUXqvxSUBwrZqLZuRD96kURp323GHt91hU";`
+const WEEKLY_MAGIC_POOL = "FjzkKi1a4p7mHz2msiDDejzrNhsaSbEGGE72PacyRctx";
+const MONTHLY_MAGIC_POOL = "26x4erQyZiekCJgZpqh47ngeVhfNjUcEMBq3pEHqgKmJ";
+const MAGIC_PROGRAM = "Ezm2E5wJjzq9k5b33knCrRgfXqy8Cxk6qufAKMPAELwr";`
 
   const errorHandling = `// Common Spell Backlash Handling
 try {
