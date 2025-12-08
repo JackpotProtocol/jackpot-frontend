@@ -6,6 +6,7 @@ import { useDrawTrigger } from '../hooks/useDrawTrigger'
 import { useTriggerEligibility } from '../hooks/useTriggerEligibility'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Coins, Trophy, Clock, Zap } from 'lucide-react'
+import ClaimPrizeButton from './ClaimPrizeButton'
 
 interface PoolCardProps {
   title: string
@@ -17,6 +18,8 @@ interface PoolCardProps {
 export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' }: PoolCardProps) {
   const { poolBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
+  const poolPda = poolInfo?.poolPda
+  const snapshot = poolInfo?.snapshot
   const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
   const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
   const { publicKey } = useWallet()
@@ -229,6 +232,13 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
                 </span>
               </p>
             </div>
+          )}
+          {/* ✅ 领取奖励按钮（赢家 / 触发者共用） */}
+          {poolPda && (
+            <ClaimPrizeButton
+              poolPda={poolPda}
+              snapshot={snapshot}
+            />
           )}
         </div>
       </div>
