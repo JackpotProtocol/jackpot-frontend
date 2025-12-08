@@ -18,8 +18,6 @@ interface PoolCardProps {
 export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' }: PoolCardProps) {
   const { poolBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
-  const poolPda = poolInfo?.poolPda
-  const snapshot = poolInfo?.snapshot
   const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
   const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
   const { publicKey } = useWallet()
