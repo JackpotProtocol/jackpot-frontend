@@ -231,13 +231,6 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
               </p>
             </div>
           )}
-          {/* ✅ 领取奖励按钮（赢家 / 触发者共用） */}
-          {poolPda && (
-            <ClaimPrizeButton
-              poolPda={poolPda}
-              snapshot={snapshot}
-            />
-          )}
         </div>
       </div>
     </div>
