@@ -2,28 +2,29 @@
 
 import { useState } from 'react'
 import * as anchor from '@coral-xyz/anchor'
-import { useWallet, useConnection } from '@solana/wallet-adapter-react'
-import { PublicKey } from '@solana/web3.js'
+import { useWallet } from '@solana/wallet-adapter-react'
+import { PublicKey, Connection } from '@solana/web3.js'
+
 import idl from '@/idl/jackpot_pool.json'
-import { addresses } from '@/config/addresses'
+import { JACKPOT_PROTOCOL_ADDRESSES, RPC_URL } from '@/config/addresses'
+
+interface ClaimPrizeParams {
+  winner: string
+  winnerAmount: bigint
+  cumulativeWeight: bigint
+  proof: number[][]
+  winnerTokenAccount: string
+  triggererTokenAccount: string
+}
 
 export function useClaimPrize() {
-  const { publicKey, signTransaction, signAllTransactions } = useWallet()
-  const { connection } = useConnection()
+  const { publicKey, signTransaction } = useWallet()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  const claimPrize = async (params: {
-    poolPda: PublicKey
-    winner: PublicKey
-    winnerAmount: bigint
-    cumulativeWeight: bigint
-    proof: number[][]
-    winnerTokenAccount: PublicKey
-    triggererTokenAccount: PublicKey
-  }) => {
+  const claimPrize = async (params: ClaimPrizeParams) => {
     if (!publicKey) {
       setError('Wallet not connected')
       return
@@ -34,45 +35,52 @@ export function useClaimPrize() {
       setError(null)
       setSuccess(false)
 
+      const connection = new Connection(RPC_URL, 'confirmed')
+
       const provider = new anchor.AnchorProvider(
         connection,
         {
           publicKey,
-          signTransaction: signTransaction!,
-          signAllTransactions: signAllTransactions!
+          signTransaction,
+          signAllTransactions: async (txs) => txs,
         } as any,
         { commitment: 'confirmed' }
       )
 
       const program = new anchor.Program(
-        idl as any,
-        addresses.programs.pool,
+        idl as anchor.Idl,
+        new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_PROGRAM),
         provider
       )
 
+      const poolPda = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_CONFIG)
+      const poolAuthority = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_AUTHORITY)
+      const poolVault = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.POOL_VAULT)
+      const usdcMint = new PublicKey(JACKPOT_PROTOCOL_ADDRESSES.USDC_MINT)
+
       const tx = await program.methods
         .claimPrize(
-          params.winner,
+          new PublicKey(params.winner),
           new anchor.BN(params.winnerAmount.toString()),
           new anchor.BN(params.cumulativeWeight.toString()),
           params.proof
         )
         .accounts({
-          pool: params.poolPda,
-          poolAuthority: addresses.pdas.poolAuthority,
-          vault: addresses.pdas.poolVault,
-          usdcMintAccount: addresses.tokens.usdc,
-          winnerTokenAccount: params.winnerTokenAccount,
-          triggererTokenAccount: params.triggererTokenAccount,
-          tokenProgram: addresses.programs.token2022
+          pool: poolPda,
+          poolAuthority,
+          vault: poolVault,
+          usdcMintAccount: usdcMint,
+          winnerTokenAccount: new PublicKey(params.winnerTokenAccount),
+          triggererTokenAccount: new PublicKey(params.triggererTokenAccount),
+          tokenProgram: anchor.utils.token.TOKEN_2022_PROGRAM_ID,
         })
         .rpc()
 
-      console.log('✅ Claim tx:', tx)
+      console.log('✅ claim_prize tx:', tx)
       setSuccess(true)
-    } catch (err: any) {
-      console.error(err)
-      setError(err.message || 'Claim failed')
+    } catch (e: any) {
+      console.error(e)
+      setError(e.message || 'Claim failed')
     } finally {
       setLoading(false)
     }
@@ -82,6 +90,6 @@ export function useClaimPrize() {
     claimPrize,
     loading,
     error,
-    success
+    success,
   }
 }
