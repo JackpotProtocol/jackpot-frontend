@@ -6,7 +6,7 @@ import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 
 import poolIdl from "@/idl/jackpot_pool.json"; // 你的 walawow_pool idl
 import { ADDRESSES } from "@/config/addresses";
-import { generateMerkleProof } from “@/merkle”;
+import { generateMerkleProof } from '../merkle';
 
 export function useClaimPrize() {
   const wallet = useAnchorWallet();
