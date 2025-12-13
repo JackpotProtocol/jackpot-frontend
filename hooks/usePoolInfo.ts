@@ -68,7 +68,8 @@ export function usePoolInfo(poolType: 'weekly' | 'monthly') {
           const program = getPoolProgram(provider)
           
           // 读取 PoolConfig 账户
-          const poolAccount = await program.account.poolConfig.fetch(poolAddress)
+          // 使用类型断言来访问账户，因为 Anchor 生成的类型可能不完全匹配
+          const poolAccount = await (program.account as any).poolConfig.fetch(poolAddress) as any
           
           const stateNames = ['Open', 'WaitingForVrf', 'Processing', 'Closed']
           const poolState = stateNames[poolAccount.state] || 'unknown'
