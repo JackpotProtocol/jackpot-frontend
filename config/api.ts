@@ -1,4 +1,4 @@
-export const JACKPOT_API = {
+export const WALAWOW_API = {
     BASE_URL: 'http://13.159.31.92:3002',
     
     ENDPOINTS: {
@@ -9,8 +9,8 @@ export const JACKPOT_API = {
     }
 }
 
-export async function fetchJackpotAPI(endpoint: string) {
-    const url = `${JACKPOT_API.BASE_URL}${endpoint}`
+export async function fetchWalawowAPI(endpoint: string) {
+    const url = `${WALAWOW_API.BASE_URL}${endpoint}`
     const response = await fetch(url)
     if (!response.ok) throw new Error('API请求失败')
     return response.json()

@@ -1,12 +1,18 @@
-export const JACKPOT_PROTOCOL_ADDRESSES = {
-  // 程序ID
-  HARVEST_PROGRAM: "GvniyXQpmeNEhJDidN8UMFxoZd1FjCRkbDUQWL6zHfYU",
-  SWAP_PROGRAM: "DY3hJyp3CoxFm3jVumkRVVpHVSdTXa4E65JZdtS7yaS2",
-  DISTRIBUTOR_PROGRAM: "5upNjEwu2Xv7DGM4RvUFBKH4e6XS6rMFLKiLfEY2Duz3",
-  POOL_PROGRAM: "Ezm2E5wJjzq9k5b33knCrRgfXqy8Cxk6qufAKMPAELwr",
+// 从 IDL 导入程序地址
+import poolIdl from '../idl/walawow_pool.json'
+import distributorIdl from '../idl/walawow_distributor.json'
+import harvestIdl from '../idl/walawow_harvest.json'
+import swapIdl from '../idl/walawow_swap.json'
+
+export const WALAWOW_PROTOCOL_ADDRESSES = {
+  // 程序ID (从 IDL 获取)
+  HARVEST_PROGRAM: harvestIdl.address,
+  SWAP_PROGRAM: swapIdl.address,
+  DISTRIBUTOR_PROGRAM: distributorIdl.address,
+  POOL_PROGRAM: poolIdl.address,
  
   // 代币Mint
-  JACKPOT_MINT: "2NJNex7ThdND7UaxFrzcYwkmPSzDB8pkUnhmtefMhoRQ",
+  WALAWOW_MINT: "2NJNex7ThdND7UaxFrzcYwkmPSzDB8pkUnhmtefMhoRQ",
   USDC_MINT: "6M34eZ2N5WrxCPVE1ayxdqEyqjXyqddSQ5WA88Gv8fhr",
  
   // Harvest合约
