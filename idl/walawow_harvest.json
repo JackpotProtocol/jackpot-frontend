@@ -1,0 +1,417 @@
+{
+  "address": "2fHg3CJUs7Yky66YnQfC8geMY1NSkbZk8YTVs2Dpyjz7",
+  "metadata": {
+    "name": "walawow_harvest",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "harvest program for walawow_protocol"
+  },
+  "instructions": [
+    {
+      "name": "harvest_tax",
+      "docs": [
+        "收割税金（不持币）：",
+        "1) harvest_withheld_tokens_to_mint：把 remaining_accounts 的 withheld 汇总到 mint",
+        "2) withdraw_withheld_tokens_from_mint：直接提到 swap 的税金账户（WALAWOW）"
+      ],
+      "discriminator": [
+        65,
+        8,
+        228,
+        8,
+        123,
+        44,
+        26,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "triggerer",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  114,
+                  118,
+                  101,
+                  115,
+                  116,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "walawow_mint",
+          "writable": true
+        },
+        {
+          "name": "swap_tax_account",
+          "writable": true
+        },
+        {
+          "name": "harvest_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  114,
+                  118,
+                  101,
+                  115,
+                  116,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_config",
+      "docs": [
+        "初始化收割配置：记录 WALAWOW mint、公钥路由与时间节流。"
+      ],
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  114,
+                  118,
+                  101,
+                  115,
+                  116,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "walawow_mint",
+          "docs": [
+            "收割对象（WALAWOW）——Token-2022 Mint"
+          ]
+        },
+        {
+          "name": "swap_tax_account",
+          "docs": [
+            "直接提取到 swap 的税金账户（WALAWOW，owner = swap_authority）"
+          ]
+        },
+        {
+          "name": "harvest_authority",
+          "docs": [
+            "PDA（必须与 Token-2022 withdraw_withheld_authority 一致）"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  114,
+                  118,
+                  101,
+                  115,
+                  116,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_interval",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "update_params",
+      "discriminator": [
+        108,
+        178,
+        190,
+        95,
+        94,
+        203,
+        116,
+        20
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  104,
+                  97,
+                  114,
+                  118,
+                  101,
+                  115,
+                  116,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "min_interval",
+          "type": "i64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "HarvestConfig",
+      "discriminator": [
+        52,
+        88,
+        69,
+        106,
+        103,
+        140,
+        132,
+        134
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "HarvestConfigUpdated",
+      "discriminator": [
+        221,
+        207,
+        117,
+        204,
+        55,
+        238,
+        190,
+        11
+      ]
+    },
+    {
+      "name": "Harvested",
+      "discriminator": [
+        249,
+        229,
+        78,
+        151,
+        106,
+        185,
+        149,
+        11
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TooFrequent",
+      "msg": "Too frequent operation"
+    },
+    {
+      "code": 6001,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidParam",
+      "msg": "Invalid parameter"
+    }
+  ],
+  "types": [
+    {
+      "name": "HarvestConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "walawow_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "swap_tax_account",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_interval",
+            "type": "i64"
+          },
+          {
+            "name": "last_harvest_time",
+            "type": "i64"
+          },
+          {
+            "name": "bump_config",
+            "type": "u8"
+          },
+          {
+            "name": "bump_auth",
+            "type": "u8"
+          },
+          {
+            "name": "_reserved",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "HarvestConfigUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "field",
+            "type": "u8"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Harvested",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "harvested_accounts",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ]
+}

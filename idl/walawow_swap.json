@@ -1,0 +1,482 @@
+{
+  "address": "477SV7DQCteAoZ9PAQLNs3d2HtVapP13ogojWVGUmkjk",
+  "metadata": {
+    "name": "walawow_swap",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "swap program for walawow_protocol"
+  },
+  "instructions": [
+    {
+      "name": "execute_swap_cpi",
+      "docs": [
+        "（可选占位）链上 DEX CPI 版本，你准备接 Orca/Raydium 时再补，我来帮你接入。"
+      ],
+      "discriminator": [
+        237,
+        131,
+        174,
+        182,
+        85,
+        20,
+        137,
+        90
+      ],
+      "accounts": [],
+      "args": [
+        {
+          "name": "_min_out",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "forward_usdc",
+      "docs": [
+        "兑换并转交（方案 A：**链下已完成兑换**，本函数只把 USDC 从 `swap_usdc_vault` 转给 distributor）",
+        "生产落地：用守护脚本完成 DEX 兑换，把 USDC 打进 `swap_usdc_vault`，再调用本函数。"
+      ],
+      "discriminator": [
+        178,
+        219,
+        193,
+        161,
+        211,
+        101,
+        234,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "triggerer",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "swap_usdc_vault",
+          "docs": [
+            "USDC 来源（owner = swap_authority）"
+          ],
+          "writable": true
+        },
+        {
+          "name": "distributor_vault",
+          "docs": [
+            "USDC 目标：分配层金库（owner = distributor_authority）"
+          ],
+          "writable": true
+        },
+        {
+          "name": "swap_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_config",
+      "docs": [
+        "初始化兑换配置"
+      ],
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "walawow_mint",
+          "docs": [
+            "WALAWOW / USDC mints"
+          ]
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "swap_authority",
+          "docs": [
+            "PDA signer"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "swap_tax_vault",
+          "docs": [
+            "接收 harvest 的 WALAWOW 税金账户（owner = swap_authority）"
+          ]
+        },
+        {
+          "name": "swap_usdc_vault",
+          "docs": [
+            "兑换产物 USDC 的暂存账户（owner = swap_authority）"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "min_swap_interval",
+          "type": "i64"
+        },
+        {
+          "name": "swap_threshold",
+          "type": "u64"
+        },
+        {
+          "name": "distributor_vault",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "update_thresholds",
+      "discriminator": [
+        226,
+        118,
+        123,
+        37,
+        77,
+        185,
+        74,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  119,
+                  97,
+                  112,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "min_swap_interval",
+          "type": "i64"
+        },
+        {
+          "name": "swap_threshold",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "SwapConfig",
+      "discriminator": [
+        212,
+        45,
+        70,
+        222,
+        245,
+        122,
+        125,
+        166
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "SwapConfigUpdated",
+      "discriminator": [
+        131,
+        188,
+        121,
+        205,
+        140,
+        60,
+        82,
+        133
+      ]
+    },
+    {
+      "name": "SwapExecuted",
+      "discriminator": [
+        150,
+        166,
+        26,
+        225,
+        28,
+        89,
+        38,
+        79
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "TooFrequent",
+      "msg": "Too frequent operation"
+    },
+    {
+      "code": 6001,
+      "name": "BelowThreshold",
+      "msg": "Below distribution threshold"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidOwner",
+      "msg": "Invalid token account owner"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidMint",
+      "msg": "Invalid mint"
+    },
+    {
+      "code": 6004,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6005,
+      "name": "NotImplemented",
+      "msg": "Not implemented"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidParam",
+      "msg": "Invalid parameter"
+    }
+  ],
+  "types": [
+    {
+      "name": "SwapConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "walawow_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "distributor_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "swap_threshold",
+            "type": "u64"
+          },
+          {
+            "name": "min_swap_interval",
+            "type": "i64"
+          },
+          {
+            "name": "last_swap_time",
+            "type": "i64"
+          },
+          {
+            "name": "bump_config",
+            "type": "u8"
+          },
+          {
+            "name": "bump_auth",
+            "type": "u8"
+          },
+          {
+            "name": "_reserved",
+            "type": {
+              "array": [
+                "u8",
+                6
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapConfigUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "field",
+            "type": "u8"
+          },
+          {
+            "name": "ts",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "ts",
+            "type": "i64"
+          },
+          {
+            "name": "walawow_in",
+            "type": "u64"
+          },
+          {
+            "name": "usdc_out",
+            "type": "u64"
+          },
+          {
+            "name": "sent_to",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}
