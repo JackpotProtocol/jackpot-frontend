@@ -22,7 +22,7 @@ export default function StrictHydrationFix({ children }: { children: React.React
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black flex items-center justify-center">
         <div className="text-center animate-pulse">
           <div className="text-6xl mb-4">🎰</div>
-          <h1 className="text-3xl font-bold text-white mb-2">Jackpot Protocol</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">Walawow Protocol</h1>
           <p className="text-gray-400">Loading...</p>
           <div className="mt-4 w-16 h-1 bg-gradient-to-r from-yellow-500 to-red-500 mx-auto rounded-full"></div>
         </div>
