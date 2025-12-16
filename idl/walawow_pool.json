@@ -1,5 +1,5 @@
 {
-  "address": "9HbEMdbqqfGRuTWEhKzPSzoRsY55MuxkwmSKdHUZm2mh",
+  "address": "FJxHKnBz1MrbAE4UB8LFMMniPcELYjvpwLpRaiEDuDjq",
   "metadata": {
     "name": "walawow_pool",
     "version": "0.1.0",
@@ -10,7 +10,10 @@
     {
       "name": "claim_prize",
       "docs": [
-        "领取奖励（带 Merkle 证明）"
+        "领取奖励（带 Merkle 证明）",
+        "生产级语义：",
+        "- 链上只验证 proof + 区间，不依赖你链下重算快照",
+        "- claim 成功后进入下一轮，旧轮数据清空（防 replay）"
       ],
       "discriminator": [
         157,
@@ -121,9 +124,9 @@
       "name": "draw_winner",
       "docs": [
         "开奖触发（社区）",
-        "",
-        "- 任何人都可以触发（必须在窗口内）",
-        "- 仅切状态为 WaitingForVrf，随机数由 off-chain VRF 生成后调用 fulfill_randomness"
+        "生产级约束：",
+        "- 必须在开奖窗口内",
+        "- 必须已经有 snapshot（SnapshotLocked）"
       ],
       "discriminator": [
         250,
@@ -150,7 +153,11 @@
     {
       "name": "fulfill_randomness",
       "docs": [
-        "VRF 回调：只允许配置的 `vrf_coordinator`（签名者）调用"
+        "VRF 回调：只允许配置的 `vrf_coordinator`（签名者）调用",
+        "生产级约束：",
+        "- 必须 WaitingForVrf",
+        "- request_id 必须等于本轮的 vrf_request_id",
+        "- last_random 必须为 0（防重放）"
       ],
       "discriminator": [
         235,
@@ -183,7 +190,7 @@
           }
         },
         {
-          "name": "_request_id",
+          "name": "request_id",
           "type": "u128"
         }
       ]
@@ -193,14 +200,9 @@
       "docs": [
         "初始化奖池",
         "",
-        "- pool_type: Weekly / Monthly",
-        "- next_draw_time: 第一轮开奖时间（unix 秒）",
-        "- draw_period: 每轮周期（秒）测试可设 3600；主网 weekly=7d monthly=30d",
-        "- draw_window: 允许开奖函数被调用的窗口（秒）例如 3600 表示 1 小时窗口",
-        "- fee_bps_triggerer: 触发者分成（bps，500 = 5%）",
-        "- indexer: 负责提交快照的 off-chain indexer 地址",
-        "- vrf_coordinator: 负责提交随机数的 off-chain VRF 调用地址",
-        "- keeper: 兜底开奖的 keeper 地址"
+        "新增（生产必需）：",
+        "- snapshot_window: 允许提交快照的时间窗（秒），只能在 [next_draw_time - snapshot_window, next_draw_time) 内提交",
+        "- min_holder_amount: 防粉尘阈值（u128，按 WALAWOW 最小单位），claim 时强约束 winner_leaf_amount >= min_holder_amount"
       ],
       "discriminator": [
         95,
@@ -328,8 +330,16 @@
           "type": "i64"
         },
         {
+          "name": "snapshot_window",
+          "type": "i64"
+        },
+        {
           "name": "fee_bps_triggerer",
           "type": "u16"
+        },
+        {
+          "name": "min_holder_amount",
+          "type": "u128"
         },
         {
           "name": "indexer",
@@ -348,7 +358,10 @@
     {
       "name": "keeper_draw",
       "docs": [
-        "Keeper 兜底开奖（超出窗口后才允许，且无触发者奖励）"
+        "Keeper 兜底开奖（超出窗口后才允许）",
+        "生产级约束：",
+        "- 必须 SnapshotLocked（已经有快照）",
+        "- 必须超出开奖窗口"
       ],
       "discriminator": [
         18,
@@ -435,7 +448,10 @@
       "name": "submit_snapshot",
       "docs": [
         "提交快照（Merkle 根、总权重、快照高度）",
-        "只要求 indexer 签名，不再需要 owner 签名。"
+        "生产级约束：",
+        "- 仅 indexer 可提交",
+        "- 仅在 snapshot_window 内可提交： now ∈ [next_draw_time - snapshot_window, next_draw_time)",
+        "- 同一轮只能提交一次（merkle_root 必须为 0）"
       ],
       "discriminator": [
         38,
@@ -540,6 +556,70 @@
           "type": "pubkey"
         }
       ]
+    },
+    {
+      "name": "update_min_holder_amount",
+      "docs": [
+        "更新防粉尘阈值"
+      ],
+      "discriminator": [
+        223,
+        49,
+        124,
+        6,
+        73,
+        138,
+        114,
+        166
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "v",
+          "type": "u128"
+        }
+      ]
+    },
+    {
+      "name": "update_vrf_coordinator",
+      "docs": [
+        "更新 VRF coordinator"
+      ],
+      "discriminator": [
+        139,
+        76,
+        111,
+        234,
+        53,
+        171,
+        189,
+        58
+      ],
+      "accounts": [
+        {
+          "name": "pool",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_vrf",
+          "type": "pubkey"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -608,6 +688,19 @@
         93,
         174,
         230
+      ]
+    },
+    {
+      "name": "MinHolderAmountUpdated",
+      "discriminator": [
+        173,
+        47,
+        133,
+        10,
+        116,
+        223,
+        65,
+        218
       ]
     },
     {
@@ -687,6 +780,19 @@
         160,
         23
       ]
+    },
+    {
+      "name": "VrfCoordinatorUpdated",
+      "discriminator": [
+        6,
+        120,
+        152,
+        221,
+        173,
+        203,
+        141,
+        237
+      ]
     }
   ],
   "errors": [
@@ -697,83 +803,113 @@
     },
     {
       "code": 6001,
+      "name": "NotInSnapshotWindow",
+      "msg": "Not in snapshot window"
+    },
+    {
+      "code": 6002,
       "name": "TooEarlyToDraw",
       "msg": "Too early to draw"
     },
     {
-      "code": 6002,
+      "code": 6003,
       "name": "InvalidState",
       "msg": "Invalid state for operation"
     },
     {
-      "code": 6003,
+      "code": 6004,
       "name": "EmptySnapshot",
       "msg": "Snapshot/total weight is empty"
     },
     {
-      "code": 6004,
+      "code": 6005,
+      "name": "SnapshotAlreadyExists",
+      "msg": "Snapshot already exists for this round"
+    },
+    {
+      "code": 6006,
       "name": "InvalidMerkleProof",
       "msg": "Invalid Merkle proof"
     },
     {
-      "code": 6005,
+      "code": 6007,
       "name": "InvalidMerkleRoot",
       "msg": "Invalid Merkle root"
     },
     {
-      "code": 6006,
+      "code": 6008,
       "name": "InvalidRequestId",
       "msg": "Invalid VRF request id"
     },
     {
-      "code": 6007,
+      "code": 6009,
+      "name": "RandomnessAlreadySet",
+      "msg": "Randomness already set (replay blocked)"
+    },
+    {
+      "code": 6010,
+      "name": "RandomnessNotReady",
+      "msg": "Randomness not ready"
+    },
+    {
+      "code": 6011,
       "name": "EmptyVault",
       "msg": "Vault is empty"
     },
     {
-      "code": 6008,
+      "code": 6012,
       "name": "Arithmetic",
       "msg": "Arithmetic error"
     },
     {
-      "code": 6009,
+      "code": 6013,
       "name": "ProofTooLong",
       "msg": "Proof length exceeded safe limit"
     },
     {
-      "code": 6010,
+      "code": 6014,
       "name": "Unauthorized",
       "msg": "Unauthorized"
     },
     {
-      "code": 6011,
+      "code": 6015,
       "name": "Paused",
       "msg": "Contract paused"
     },
     {
-      "code": 6012,
+      "code": 6016,
       "name": "NotWinner",
       "msg": "Address is not the winner"
     },
     {
-      "code": 6013,
+      "code": 6017,
       "name": "InvalidRandomness",
       "msg": "Invalid randomness"
     },
     {
-      "code": 6014,
+      "code": 6018,
       "name": "InvalidTime",
       "msg": "Invalid time"
     },
     {
-      "code": 6015,
+      "code": 6019,
       "name": "InvalidKeeper",
       "msg": "Invalid keeper address"
     },
     {
-      "code": 6016,
-      "name": "AlreadyTriggered",
-      "msg": "Draw already triggered or community already drew"
+      "code": 6020,
+      "name": "InvalidIndexer",
+      "msg": "Invalid indexer address"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidVrfCoordinator",
+      "msg": "Invalid vrf coordinator address"
+    },
+    {
+      "code": 6022,
+      "name": "BelowMinHolderAmount",
+      "msg": "Winner leaf amount below min holder amount"
     }
   ],
   "types": [
@@ -785,6 +921,10 @@
           {
             "name": "pool",
             "type": "pubkey"
+          },
+          {
+            "name": "round_id",
+            "type": "u64"
           },
           {
             "name": "triggerer",
@@ -835,8 +975,16 @@
             "type": "pubkey"
           },
           {
+            "name": "round_id",
+            "type": "u64"
+          },
+          {
             "name": "triggered_at",
             "type": "i64"
+          },
+          {
+            "name": "vrf_request_id",
+            "type": "u128"
           }
         ]
       }
@@ -857,6 +1005,26 @@
           {
             "name": "new_keeper",
             "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MinHolderAmountUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_holder_amount",
+            "type": "u128"
           },
           {
             "name": "timestamp",
@@ -895,6 +1063,34 @@
             "type": "pubkey"
           },
           {
+            "name": "round_id",
+            "type": "u64"
+          },
+          {
+            "name": "round_started_at",
+            "type": "i64"
+          },
+          {
+            "name": "state",
+            "type": "u8"
+          },
+          {
+            "name": "next_draw_time",
+            "type": "i64"
+          },
+          {
+            "name": "draw_period",
+            "type": "i64"
+          },
+          {
+            "name": "draw_window",
+            "type": "i64"
+          },
+          {
+            "name": "snapshot_window",
+            "type": "i64"
+          },
+          {
             "name": "merkle_root",
             "type": {
               "array": [
@@ -912,22 +1108,6 @@
             "type": "u128"
           },
           {
-            "name": "next_draw_time",
-            "type": "i64"
-          },
-          {
-            "name": "draw_period",
-            "type": "i64"
-          },
-          {
-            "name": "draw_window",
-            "type": "i64"
-          },
-          {
-            "name": "state",
-            "type": "u8"
-          },
-          {
             "name": "last_random",
             "type": {
               "array": [
@@ -938,6 +1118,14 @@
           },
           {
             "name": "last_winning_index",
+            "type": "u128"
+          },
+          {
+            "name": "vrf_request_time",
+            "type": "i64"
+          },
+          {
+            "name": "vrf_request_id",
             "type": "u128"
           },
           {
@@ -957,10 +1145,6 @@
             "type": "u16"
           },
           {
-            "name": "vrf_request_time",
-            "type": "i64"
-          },
-          {
             "name": "paused",
             "type": "bool"
           },
@@ -973,12 +1157,12 @@
             "type": "pubkey"
           },
           {
-            "name": "vrf_request_id",
-            "type": "u128"
-          },
-          {
             "name": "keeper",
             "type": "pubkey"
+          },
+          {
+            "name": "min_holder_amount",
+            "type": "u128"
           }
         ]
       }
@@ -1009,12 +1193,40 @@
             "type": "i64"
           },
           {
+            "name": "draw_period",
+            "type": "i64"
+          },
+          {
+            "name": "draw_window",
+            "type": "i64"
+          },
+          {
+            "name": "snapshot_window",
+            "type": "i64"
+          },
+          {
             "name": "fee_bps_triggerer",
             "type": "u16"
           },
           {
+            "name": "round_id",
+            "type": "u64"
+          },
+          {
             "name": "keeper",
             "type": "pubkey"
+          },
+          {
+            "name": "indexer",
+            "type": "pubkey"
+          },
+          {
+            "name": "vrf_coordinator",
+            "type": "pubkey"
+          },
+          {
+            "name": "min_holder_amount",
+            "type": "u128"
           }
         ]
       }
@@ -1047,6 +1259,10 @@
           {
             "name": "pool",
             "type": "pubkey"
+          },
+          {
+            "name": "round_id",
+            "type": "u64"
           },
           {
             "name": "timestamp",
@@ -1082,6 +1298,10 @@
             "type": "pubkey"
           },
           {
+            "name": "round_id",
+            "type": "u64"
+          },
+          {
             "name": "winner",
             "type": "pubkey"
           },
@@ -1100,6 +1320,14 @@
           {
             "name": "claimed_at",
             "type": "i64"
+          },
+          {
+            "name": "next_round_id",
+            "type": "u64"
+          },
+          {
+            "name": "next_draw_time",
+            "type": "i64"
           }
         ]
       }
@@ -1112,6 +1340,10 @@
           {
             "name": "pool",
             "type": "pubkey"
+          },
+          {
+            "name": "round_id",
+            "type": "u64"
           },
           {
             "name": "randomness",
@@ -1129,6 +1361,10 @@
           {
             "name": "fulfilled_at",
             "type": "i64"
+          },
+          {
+            "name": "vrf_request_id",
+            "type": "u128"
           }
         ]
       }
@@ -1141,6 +1377,10 @@
           {
             "name": "pool",
             "type": "pubkey"
+          },
+          {
+            "name": "round_id",
+            "type": "u64"
           },
           {
             "name": "merkle_root",
@@ -1158,6 +1398,34 @@
           {
             "name": "snapshot_block",
             "type": "u64"
+          },
+          {
+            "name": "submitted_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VrfCoordinatorUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pool",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_vrf",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_vrf",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
           }
         ]
       }
