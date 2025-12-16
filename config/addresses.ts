@@ -6,51 +6,51 @@ import swapIdl from '../idl/walawow_swap.json'
 
 /**
  * Walawow Protocol 地址配置
- * 根据 .env 文件配置更新
+ * ✅ 与当前 devnet 实际部署状态完全一致
  */
 export const WALAWOW_PROTOCOL_ADDRESSES = {
-  // ==================== 程序ID (从 IDL 获取，与 .env 一致) ====================
-  HARVEST_PROGRAM: harvestIdl.address,      // 2fHg3CJUs7Yky66YnQfC8geMY1NSkbZk8YTVs2Dpyjz7
-  SWAP_PROGRAM: swapIdl.address,            // 477SV7DQCteAoZ9PAQLNs3d2HtVapP13ogojWVGUmkjk
-  DISTRIBUTOR_PROGRAM: distributorIdl.address, // G5amgFciBWH5AMuc8af4prpZ11GWgscDPeuD4fBs9AcV
-  POOL_PROGRAM: poolIdl.address,            // 9HbEMdbqqfGRuTWEhKzPSzoRsY55MuxkwmSKdHUZm2mh
- 
-  // ==================== 代币 Mint ====================
-  WALAWOW_MINT: "8TGYurG76285iK1DxQg7GZScUtpeuSC4yaEogW6AiMJf",  // Token-2022, 带税
-  USDC_MINT: "6YVAhYGragaj3oo87UM1MudRd9gEoEYLGtJCLD9SwHNc",     // Token-2022
- 
-  // ==================== Pool 合约 PDA ====================
-  POOL_WEEKLY: "C2ZTwMNPb2MyGFie9nBNzsLNBDBS5hyHVdjGa5uGTNbj",   // Weekly Pool PDA
-  POOL_MONTHLY: "8UC7vgndDd3cRXoPZMXxCB7MJthtnzyZnhT8P7SwvsKG",  // Monthly Pool PDA
- 
-  // ==================== Distributor 合约 PDA ====================
-  DISTRIBUTOR_CONFIG: "4K9YGc3rnpVc9CcN2NZEPxCKTyosGDos5A5rDkDsBiz4",
-  DISTRIBUTOR_AUTHORITY: "3fNDA3fGwyvVuQG2ktXptDDgVPVEG146qgX6P1daixf7",
-  DISTRIBUTOR_VAULT: "BwCPCt4PCn3t9f6sT8Wo4VQBCPnrhsLAmAbjveefJMRD",
- 
-  // Distributor 分配的各个池的 Vault
-  DISTRIBUTOR_POOL_WEEKLY_VAULT: "3tfQYJMCXRysM47STuk4QQqBsZJoTfyKHxDyteqNpdXT",
-  DISTRIBUTOR_POOL_MONTHLY_VAULT: "HHdg7CtMJh6isDjCPQNZRner2tC6UE2msAsHKu41JxTK",
-  DISTRIBUTOR_POOL_STAKING_VAULT: "BL8EGQnSGvPxz46rcE8UWRrqsxLqxL5WkZqTxPn6y4LZ",
-  DISTRIBUTOR_POOL_LIQUIDITY_VAULT: "BtbkvU4SGf6YfbvFNg7g6iSqJNwWWKLSmyiS9DCAQVSv",
-  DISTRIBUTOR_POOL_TEAM_VAULT: "Bk4tqUDX9x4QcjmjMZFxSxj4Nb57KXcD8JhbgCeLJQAP",
- 
-  // ==================== Harvest 合约 PDA ====================
-  HARVEST_CONFIG: "3D4maWdU7aiE7nGQsfQQiwRTsJgRyvdnJS9KnA5EPNHP",
-  HARVEST_AUTHORITY: "J5B9SR7xYtGkXZkqy7En1TADM6pnFDNcJwrSpdKDC6Db",
- 
-  // ==================== Swap 合约 PDA ====================
-  SWAP_CONFIG: "J3GZES33SnsKGdcmBe5oxvCiYGjiaQ33g92ygBxsuTjc",
-  SWAP_AUTHORITY: "33imqfTY9Hb38wTNPhxPCowcT4BFEcEtyb79qyT1CAbJ",
-  SWAP_TAX_VAULT: "FNk6EX4BLakraRrusYXVAp783upMuSVM2SfhC4mUnU9v",  // WALAWOW tax vault
-  SWAP_USDC_VAULT: "DmcvYibAkTBZtcJHcMijPhw2XBH2D7nCaxfnKxL6yk4F",   // USDC vault
- 
-  // ==================== VRF / Keeper 配置 ====================
+  // ==================== 程序 ID ====================
+  HARVEST_PROGRAM: harvestIdl.address,        // EGgcfctL62Eaq8kG6T9gPjWSjNktx3edRVXWVm4e7R2r
+  SWAP_PROGRAM: swapIdl.address,              // 93gyiehkL4mAQbqJViRWj3eq2FtGusy1SzuGLefNjamZ
+  DISTRIBUTOR_PROGRAM: distributorIdl.address,// G9XaeLFJbmjrZUsEoky5YiRG4Fr7j5ZQNernvfrjfX3f
+  POOL_PROGRAM: poolIdl.address,              // FJxHKnBz1MrbAE4UB8LFMMniPcELYjvpwLpRaiEDuDjq
+
+  // ==================== Token Mint ====================
+  WALAWOW_MINT: "DPuHouX7yJP484mBPuSxwPn9xKZPzUEue37cPbGXpG8D", // Token-2022 (taxed)
+  USDC_MINT: "ECjFKugJfzXEbLD3TkkewRAjJs38bssNpXGxEfKfKgHT",    // Token-2022 USDC
+
+  // ==================== Pool PDA ====================
+  POOL_WEEKLY: "BVmZXGSPq2z2d6V4n3tMHCi5DkLhZ24gzYRA17zp7EXQ",
+  POOL_MONTHLY: "9KFBHKFqe7wiR9MTfizwGT75DrNb7dqUQVeZA1kKXV17",
+
+  // ==================== Distributor PDA ====================
+  DISTRIBUTOR_CONFIG: "Cxf2fzY7M7rUuxVyeea6tYMzeskB6NYNmhHtqawzAgvT",
+  DISTRIBUTOR_AUTHORITY: "2gZMATJi6k9gNaTxWLarmv5ftoxo5dwgn7b3YSsh8a9d",
+  DISTRIBUTOR_VAULT: "2DMad4xrWx5DJn7GVX8AsgAL72rgcP2myqqaDKHYrdBD",
+
+  // Distributor 分配池（USDC vaults）
+  DISTRIBUTOR_POOL_WEEKLY_VAULT: "8qvntR8JsWMFB29ya9zN7GhpwLDpMtWe5eQoo3nHmHWG",
+  DISTRIBUTOR_POOL_MONTHLY_VAULT: "3rjPZTvFNCFiHNxLjtF9EqqHpD8KAZzaoYXyzFYf9Bpz",
+  DISTRIBUTOR_POOL_STAKING_VAULT: "Fm5z6iNzjuCdozMf6MbD337egkcQKg7y9ucYub26spuA",
+  DISTRIBUTOR_POOL_LIQUIDITY_VAULT: "93cUizoZA1sCBhL9cJb33dD4z1JzBvYx5j68speQmEhh",
+  DISTRIBUTOR_POOL_TEAM_VAULT: "2TXdjfZp9C2yd6oggdC3WmKVaqRadpJopS99nbXLhAxB",
+
+  // ==================== Harvest PDA ====================
+  HARVEST_CONFIG: "5YBroUkpWqFyRLiRDpZ5FB3yrmb7RmUE12677yDU8cYG",
+  HARVEST_AUTHORITY: "GYraorLj8MkAYZCmuXoQ15Fgd4cdm4enV5X2edHpWnKa",
+
+  // ==================== Swap PDA ====================
+  SWAP_CONFIG: "6xdVadzBTnMWNTPEiagdFsLQrEngMYYrjxKu4BcgEcZJ",
+  SWAP_AUTHORITY: "6vKksMUCvdvkF8dFrWYJpkhjJSSAJLuNXkDjCsHrj5xB",
+  SWAP_TAX_VAULT: "DqiFpRhw3mSf9e7ZGVWS64giHnmWsgzGW5awwypXLdCP", // WALAWOW tax
+  SWAP_USDC_VAULT: "24WFYqUAcVbm4pMHBUJp6Ch56ewJ7dp2eq2wqDsEUfjS",
+
+  // ==================== VRF / Keeper ====================
   VRF_COORDINATOR: "HifRke4NrpDcget6FRwW2aryZDWgdiURVh8ewduaoepx",
- 
-  // ==================== RPC 配置 ====================
-  RPC_URL: "https://api.devnet.solana.com",
+
+  // ==================== RPC ====================
+  RPC_URL: "https://devnet.helius-rpc.com/?api-key=ea4c9b26-b295-4bcb-bba4-9a1ab1007184",
 } as const;
 
-// 导出 RPC URL（向后兼容）
+// 向后兼容
 export const RPC_URL = WALAWOW_PROTOCOL_ADDRESSES.RPC_URL;
