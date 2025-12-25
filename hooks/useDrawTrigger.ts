@@ -74,19 +74,19 @@ export function useDrawTrigger() {
               errorMessage = 'Not in draw window. Please wait until the scheduled time.'
               break
             case 6001:
-              errorMessage = 'Too early to trigger draw. Please wait until the scheduled time.'
+              errorMessage = 'Snapshot not available yet. Please wait until the snapshot window.'
               break
             case 6002:
-              errorMessage = 'Pool is not in a state that allows drawing.'
+              errorMessage = 'Too early to draw. Please wait until the draw window opens.'
               break
-            case 6011:
-              errorMessage = 'Contract is currently paused.'
+            case 6003:
+              errorMessage = 'Pool state does not allow drawing.'
               break
-            case 6010:
+            case 6014:
               errorMessage = 'Unauthorized to trigger draw.'
               break
-            case 6016:
-              errorMessage = 'Draw already triggered. Please wait for the next cycle.'
+            case 6015:
+              errorMessage = 'Contract is currently paused.'
               break
             default:
               errorMessage = err.error.errorMessage || errorMessage
