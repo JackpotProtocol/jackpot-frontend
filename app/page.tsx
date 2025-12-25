@@ -30,7 +30,7 @@ export default function Home() {
               <p className="text-xl md:text-2xl text-walawow-neutral-text-secondary max-w-2xl">
                 Where Every Interaction Holds a{' '}
                 <span className="font-semibold text-walawow-gold-light">Surprise</span>. 
-                Experience Decentralized Magic on{' '}
+                Experience Decentralized Rewards on{' '}
                 <span className="font-semibold text-walawow-purple-light">Solana</span>.
               </p>
             </div>
@@ -81,8 +81,8 @@ export default function Home() {
                   Your <span className="text-walawow-gold">WOW Moment</span> Awaits
                 </h2>
                 <p className="text-lg text-walawow-neutral-text-secondary mb-10 max-w-md mx-auto">
-                  Connect your wallet to unlock the magic. Discover surprises, participate in draws, 
-                  and experience the thrill of decentralized serendipity.
+                  Connect your wallet to unlock access. Discover surprises, participate in draws, 
+                  and experience transparent on-chain rewards.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                   <div className="transform transition-all hover:scale-110 active:scale-95">
