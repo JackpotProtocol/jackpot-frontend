@@ -49,6 +49,9 @@ export function useClaimPrize() {
       const [poolAuthorityPDA] = getPoolAuthorityPDA(poolAddress)
       const [vaultPDA] = getPoolVaultPDA(poolAddress)
 
+      const poolAccount = await (program.account as any).poolConfig.fetch(poolAddress) as any
+      const lastTriggerer: PublicKey | undefined = poolAccount?.lastTriggerer
+
       // 获取 USDC mint
       const usdcMint = new PublicKey(WALAWOW_PROTOCOL_ADDRESSES.USDC_MINT)
 
@@ -59,11 +62,14 @@ export function useClaimPrize() {
       )
 
       // 获取或创建 triggerer 的 USDC token account (如果 last_triggerer 不是 default)
-      // 注意：这里需要从链上读取 pool.last_triggerer，简化处理使用 winner 的账户
-      const triggererTokenAccount = getAssociatedTokenAddressSync(
-        usdcMint,
-        params.winner // 简化：实际应该从 pool.last_triggerer 获取
-      )
+      let triggererTokenAccount = winnerTokenAccount
+      if (lastTriggerer && !lastTriggerer.equals(PublicKey.default)) {
+        triggererTokenAccount = getAssociatedTokenAddressSync(
+          usdcMint,
+          lastTriggerer,
+          true
+        )
+      }
 
       console.log('📝 Preparing claim transaction...')
       console.log('Pool:', poolAddress.toString())
@@ -155,4 +161,3 @@ export function useClaimPrize() {
     canClaim: !!publicKey && !!wallet && !!program
   }
 }
-
