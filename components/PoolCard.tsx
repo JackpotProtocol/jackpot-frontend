@@ -1,9 +1,11 @@
 // components/PoolCard.tsx
 'use client'
+import { useState } from 'react'
 import { usePoolBalance } from '../hooks/usePoolBalance'
 import { usePoolInfo } from '../hooks/usePoolInfo'
 import { useDrawTrigger } from '../hooks/useDrawTrigger'
 import { useTriggerEligibility } from '../hooks/useTriggerEligibility'
+import { useClaimPrize } from '../hooks/useClaimPrize'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Coins, Trophy, Clock, Zap } from 'lucide-react'
 
@@ -19,7 +21,15 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
   const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
   const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
+  const { claimPrize, claiming, error: claimError, success: claimSuccess, canClaim } = useClaimPrize()
   const { publicKey } = useWallet()
+  const [showClaimForm, setShowClaimForm] = useState(false)
+  const [claimFormError, setClaimFormError] = useState<string | null>(null)
+  const [claimForm, setClaimForm] = useState({
+    winnerLeafAmount: '',
+    cumulativeWeightUntil: '',
+    proofJson: '',
+  })
 
   const loading = balanceLoading || infoLoading
 
@@ -95,6 +105,60 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
     if (poolInfo.lastPrizeAmount > 0 && poolInfo.lastPaidAmount >= poolInfo.lastPrizeAmount) return 'Claimed'
     return 'Pending'
   }
+
+  const parseProofInput = (raw: string) => {
+    const trimmed = raw.trim()
+    if (!trimmed) throw new Error('Merkle proof is required')
+
+    const parsed = JSON.parse(trimmed)
+    if (!Array.isArray(parsed)) throw new Error('Merkle proof must be a JSON array')
+
+    return parsed.map((item) => {
+      if (typeof item === 'string') {
+        const hex = item.startsWith('0x') ? item.slice(2) : item
+        if (hex.length !== 64) throw new Error('Each proof element must be 32-byte hex')
+        const bytes = new Uint8Array(32)
+        for (let i = 0; i < 32; i += 1) {
+          const byte = Number.parseInt(hex.slice(i * 2, i * 2 + 2), 16)
+          if (Number.isNaN(byte)) throw new Error('Invalid hex value in proof')
+          bytes[i] = byte
+        }
+        return bytes
+      }
+      if (Array.isArray(item)) {
+        if (item.length !== 32) throw new Error('Each proof element must be 32 bytes')
+        return Uint8Array.from(item)
+      }
+      throw new Error('Unsupported proof element format')
+    })
+  }
+
+  const handleClaim = async () => {
+    if (!publicKey) {
+      setClaimFormError('Connect wallet to claim.')
+      return
+    }
+    if (!claimForm.winnerLeafAmount || !claimForm.cumulativeWeightUntil) {
+      setClaimFormError('Winner amount and cumulative weight are required.')
+      return
+    }
+
+    setClaimFormError(null)
+    try {
+      const proof = parseProofInput(claimForm.proofJson)
+      await claimPrize({
+        poolType,
+        winner: publicKey,
+        winnerLeafAmount: BigInt(claimForm.winnerLeafAmount),
+        cumulativeWeightUntil: BigInt(claimForm.cumulativeWeightUntil),
+        proof,
+      })
+    } catch (err: any) {
+      setClaimFormError(err?.message || 'Invalid claim input.')
+    }
+  }
+
+  const canAttemptClaim = poolInfo.poolState === 'ReadyToClaim' && poolVaultBalance > 0
 
   // 骨架屏加载状态
   if (loading) {
@@ -252,6 +316,79 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
                   {poolInfo.lastWinner.slice(0, 4)}...{poolInfo.lastWinner.slice(-4)}
                 </span>
               </p>
+            </div>
+          )}
+        </div>
+
+        {/* 领奖按钮 */}
+        <div className="pt-4 border-t border-walawow-neutral-border/50">
+          <button
+            className={`w-full py-3 rounded-xl font-semibold transition-all ${
+              !publicKey || claiming || !canAttemptClaim
+                ? 'bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary cursor-not-allowed'
+                : 'btn-outline hover:scale-[1.01]'
+            }`}
+            onClick={() => setShowClaimForm((prev) => !prev)}
+            disabled={!publicKey || claiming || !canAttemptClaim}
+          >
+            {claiming ? 'Claiming Prize...' : claimSuccess ? 'Prize Claimed' : 'Claim Prize'}
+          </button>
+          <p className="text-xs text-walawow-neutral-text-secondary text-center mt-2">
+            Winner claims here. Triggerer rewards are paid in the same transaction.
+          </p>
+
+          {showClaimForm && (
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="data-label">Winner Leaf Amount</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 rounded-lg bg-walawow-neutral-card border border-walawow-neutral-border text-sm text-white"
+                  placeholder="e.g. 1000"
+                  value={claimForm.winnerLeafAmount}
+                  onChange={(event) => setClaimForm({ ...claimForm, winnerLeafAmount: event.target.value })}
+                />
+              </div>
+              <div>
+                <label className="data-label">Cumulative Weight Until</label>
+                <input
+                  type="text"
+                  className="w-full mt-1 px-3 py-2 rounded-lg bg-walawow-neutral-card border border-walawow-neutral-border text-sm text-white"
+                  placeholder="e.g. 5000"
+                  value={claimForm.cumulativeWeightUntil}
+                  onChange={(event) => setClaimForm({ ...claimForm, cumulativeWeightUntil: event.target.value })}
+                />
+              </div>
+              <div>
+                <label className="data-label">Merkle Proof (JSON)</label>
+                <textarea
+                  className="w-full mt-1 px-3 py-2 rounded-lg bg-walawow-neutral-card border border-walawow-neutral-border text-sm text-white h-28"
+                  placeholder='["0x...", "0x..."]'
+                  value={claimForm.proofJson}
+                  onChange={(event) => setClaimForm({ ...claimForm, proofJson: event.target.value })}
+                />
+              </div>
+              {(claimFormError || claimError) && (
+                <div className="text-xs text-red-300 bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2">
+                  {claimFormError || claimError}
+                </div>
+              )}
+              {claimSuccess && (
+                <div className="text-xs text-green-300 bg-green-500/10 border border-green-500/30 rounded-lg px-3 py-2">
+                  Prize claimed successfully.
+                </div>
+              )}
+              <button
+                className={`w-full py-3 rounded-xl font-semibold transition-all ${
+                  !canClaim || claiming || !canAttemptClaim
+                    ? 'bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary cursor-not-allowed'
+                    : 'btn-gold hover:shadow-lg hover:scale-[1.01]'
+                }`}
+                onClick={handleClaim}
+                disabled={!canClaim || claiming || !canAttemptClaim}
+              >
+                {claiming ? 'Submitting Claim...' : 'Submit Claim'}
+              </button>
             </div>
           )}
         </div>
