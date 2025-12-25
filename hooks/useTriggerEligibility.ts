@@ -37,7 +37,7 @@ export function useTriggerEligibility(poolType: 'weekly' | 'monthly') {
         triggerWindowStart.getTime() + poolInfo.drawWindow * 1000
       )
 
-      let nextTriggerTime = triggerWindowStart
+      let nextTriggerTime: Date | null = triggerWindowStart
       let timeUntilTrigger = ''
       const withinWindow = now >= triggerWindowStart && now <= triggerWindowEnd
       const isWithinTriggerWindow = withinWindow && poolInfo.poolState === 'SnapshotLocked' && !poolInfo.paused
