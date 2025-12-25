@@ -1,350 +1,462 @@
 // app/whitepaper/page.tsx
 import Link from 'next/link'
-import {
-  ScrollText,
-  Target,
-  TrendingUp,
-  Coins,
-  Globe,
-  Zap,
-  Shield,
-  Users,
-  Rocket,
-  Gift,
-} from 'lucide-react'
+import { ScrollText, Sparkles, Target, TrendingUp, Coins, Globe, Zap, Shield, Users, Rocket, Lock, Gift } from 'lucide-react'
 
 export default function Whitepaper() {
   return (
-    <div className="max-w-6xl mx-auto space-y-12 px-4 py-8">
+    <div className="max-w-6xl mx-auto space-y-16 px-4 py-8">
+      {/* Protocol Header */}
       <div className="text-center relative">
-        <div className="absolute -top-12 left-1/3 h-40 w-40 bg-walawow-purple/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-8 right-1/4 h-32 w-32 bg-walawow-gold/5 rounded-full blur-3xl"></div>
-
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <ScrollText className="h-10 w-10 text-walawow-purple-light" />
-          <h1 className="title-gradient text-4xl md:text-5xl font-bold">
-            Walawow Protocol Whitepaper
+        <div className="absolute -top-12 left-1/3 h-48 w-48 bg-walawow-purple/10 rounded-full blur-3xl"></div>
+        <div className="absolute top-8 right-1/4 h-36 w-36 bg-walawow-gold/5 rounded-full blur-3xl"></div>
+        
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <ScrollText className="h-12 w-12 text-walawow-purple-light" />
+          <h1 className="title-gradient text-5xl md:text-6xl font-bold">
+            Walawow Protocol Overview
           </h1>
+          <Sparkles className="h-12 w-12 text-walawow-gold" />
         </div>
-        <p className="text-lg text-walawow-neutral-text-secondary max-w-3xl mx-auto">
-          Walawow Protocol: The Perpetual Wealth Aggregator on Solana
+        <p className="text-2xl text-walawow-neutral-text-secondary max-w-3xl mx-auto">
+          The Protocol of Surprise & Delight on <span className="text-walawow-purple-light font-semibold">Solana</span>
         </p>
       </div>
 
+      {/* Abstract: Surprise-Driven Protocol */}
       <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Target className="h-6 w-6 text-walawow-gold" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">1. Summary: Value for Holders</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-purple-dark flex items-center justify-center">
+            <Target className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">1. Surprise-Driven Protocol</h2>
         </div>
-        <p className="text-walawow-neutral-text-secondary text-lg leading-relaxed">
-          Walawow Protocol is a Solana-based, smart-contract-driven on-chain wealth aggregation protocol. It is an
-          experiment that uses Token-2022 transfer fees to aggregate and redistribute on-chain wealth. Walawow converts
-          trading activity into periodic capital gains for holders and centers its narrative on weekly and monthly surprise pools.
-        </p>
+        
+        <div className="text-walawow-neutral-text-secondary space-y-6 text-lg leading-relaxed">
+          <p>
+            Walawow is not merely another token in the vast crypto cosmos. It is an <span className="text-walawow-gold font-semibold">on-chain surprise protocol</span> 
+            powered by smart contracts on Solana. This is an experiment in creating moments of delight through decentralized mechanisms—transforming 
+            everyday interactions into periodic surprise outcomes.
+          </p>
+          <p>
+            Unlike traditional financial protocols that focus solely on yield, Walawow introduces the element of <span className="text-walawow-purple-light font-semibold">unexpected joy</span>. 
+            Every transaction, every hold, every community interaction carries the potential for a <span className="text-walawow-gold font-semibold">WOW moment</span>.
+          </p>
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-walawow-purple/10 to-walawow-gold/10 border border-walawow-purple/30">
+            <div className="flex items-center gap-3 mb-3">
+              <Zap className="h-6 w-6 text-walawow-gold" />
+              <h3 className="text-lg font-semibold text-white">Core Philosophy</h3>
+            </div>
+            <p className="text-walawow-neutral-text-secondary">
+              We believe that decentralized technologies should not only create wealth but also create <span className="text-walawow-gold">joy</span>, 
+              foster <span className="text-walawow-purple-light">community</span>, and deliver <span className="text-walawow-gold">surprises</span>.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border space-y-8">
-        <div className="flex items-center gap-3">
-          <Coins className="h-6 w-6 text-walawow-purple-light" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">2. Economic Model: A Self-Reinforcing Loop</h2>
+      {/* Protocol Evolution */}
+      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-gold to-walawow-gold-dark flex items-center justify-center">
+            <TrendingUp className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">2. Three-Phase Evolution</h2>
+        </div>
+        
+        <div className="space-y-8">
+          {[
+            {
+              version: "V1",
+              title: "Surprise Ignition Phase",
+              color: "from-walawow-purple to-walawow-purple-dark",
+              icon: <Sparkles className="h-5 w-5" />,
+              description: "Ignite community excitement through surprise moments, establishing strong bonds and liquidity foundations through participation rather than pure utility.",
+              features: ["Weekly & Monthly Surprise Pools", "Community Trigger Mechanics", "Treasure Accumulation"]
+            },
+            {
+              version: "V2",
+              title: "Sustainable Delight Phase",
+              color: "from-walawow-gold to-walawow-gold-dark",
+              icon: <Coins className="h-5 w-5" />,
+              description: "Introduce staking systems to provide continuous rewards and value appreciation, creating sustainable incentives for long-term community members.",
+              features: ["Staking Rewards", "Surprise Multiplier Mechanics", "Enhanced Distribution"]
+            },
+            {
+              version: "V3",
+              title: "Protocol Autonomy Phase",
+              color: "from-walawow-purple-light to-walawow-gold",
+              icon: <Globe className="h-5 w-5" />,
+              description: "Gradually transfer protocol governance to the community, achieving decentralization and a sustainable surprise ecosystem.",
+              features: ["Decentralized Governance", "Fully Community-Owned Protocol", "Self-Sustaining Distribution Mechanism"]
+            }
+          ].map((phase, index) => (
+            <div key={index} className={`flex flex-col md:flex-row items-start gap-6 p-6 rounded-2xl bg-gradient-to-br ${phase.color}/10 border ${phase.color.replace('from-', 'border-')}/30`}>
+              <div className={`flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br ${phase.color} flex flex-col items-center justify-center`}>
+                <div className="text-white font-bold text-xl">{phase.version}</div>
+                <div className="text-white/80 text-xs">Phase</div>
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`p-2 rounded-lg bg-gradient-to-br ${phase.color}/20`}>
+                    <div className="text-white">{phase.icon}</div>
+                  </div>
+                  <h3 className="text-xl font-bold text-white">{phase.title}</h3>
+                </div>
+                <p className="text-walawow-neutral-text-secondary mb-4 leading-relaxed">
+                  {phase.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {phase.features.map((feature, i) => (
+                    <span key={i} className="px-3 py-1.5 rounded-full text-xs font-medium bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary">
+                      {feature}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Protocol Economics */}
+      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-gold flex items-center justify-center">
+            <Coins className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">3. Protocol Economics</h2>
+        </div>
+        
+        <div className="mb-8">
+          <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-walawow-purple/20 flex items-center justify-center">
+              <Zap className="h-4 w-4 text-walawow-purple-light" />
+            </div>
+            <span className="title-gradient text-xl">3.1 Source of Funds: The Transfer Tax</span>
+          </h3>
+          <p className="text-walawow-neutral-text-secondary text-lg leading-relaxed">
+            The protocol applies a 10% transfer tax on all $WALAWOW trades using Token-2022 Transfer Fee. Taxes are harvested on-chain,
+            swapped to USDC off-chain, then forwarded to the distributor vault for on-chain allocation across pools.
+          </p>
         </div>
 
-        <div className="space-y-3">
-          <h3 className="text-xl font-semibold text-white">2.1 Source of Wealth: Transaction Tax</h3>
-          <p className="text-walawow-neutral-text-secondary text-lg leading-relaxed">
-            The protocol enables Token-2022 Transfer Fee (10%) on $WALAWOW transfers and trades. After collection,
-            the tax is automatically swapped into USDC and distributed to the pools below:
-          </p>
-          <div className="grid md:grid-cols-2 gap-4 text-walawow-neutral-text-secondary">
-            <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-              <div className="text-white font-semibold mb-2">V1 Allocation</div>
-              <ul className="space-y-1 text-sm">
-                <li>Weekly Pool 35%</li>
-                <li>Monthly Pool 25%</li>
-                <li>Liquidity Injection 25%</li>
-                <li>V2 Development Fund 5%</li>
-                <li>Ecosystem Growth Fund 10%</li>
-              </ul>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <div className="glass-card p-6 rounded-2xl border border-walawow-purple/30 mb-6">
+              <h4 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-walawow-purple/30 flex items-center justify-center">
+                  <span className="text-walawow-purple-light text-sm font-bold">V1</span>
+                </div>
+                <span className="text-walawow-purple-light">Current Allocation</span>
+              </h4>
+              <div className="space-y-4">
+                {[
+                  { label: "Weekly Surprise Pool", value: "35%", color: "bg-walawow-purple" },
+                  { label: "Monthly Spectacular", value: "25%", color: "bg-walawow-purple-light" },
+                  { label: "Liquidity Allocation", value: "25%", color: "bg-walawow-purple/70" },
+                  { label: "V2 Development", value: "5%", color: "bg-walawow-gold/80" },
+                  { label: "Ecosystem Fund", value: "10%", color: "bg-walawow-gold" }
+                ].map((item, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-walawow-neutral-text-secondary">{item.label}</span>
+                      <span className="font-semibold text-white">{item.value}</span>
+                    </div>
+                    <div className="h-2 bg-walawow-neutral-card rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${item.color} rounded-full transition-all duration-1000`}
+                        style={{ width: item.value }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-              <div className="text-white font-semibold mb-2">V2 Allocation</div>
-              <ul className="space-y-1 text-sm">
-                <li>Weekly Pool 30%</li>
-                <li>Monthly Pool 20%</li>
-                <li>Liquidity Injection 20%</li>
-                <li>Staking Dividends 20%</li>
-                <li>Ecosystem Growth Fund 10%</li>
-              </ul>
+          </div>
+          
+          <div>
+            <div className="glass-card p-6 rounded-2xl border border-walawow-gold/30 mb-6">
+              <h4 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-walawow-gold/30 flex items-center justify-center">
+                  <span className="text-walawow-gold text-sm font-bold">V2</span>
+                </div>
+                <span className="text-walawow-gold">Future Evolution</span>
+              </h4>
+              <div className="space-y-4">
+                {[
+                  { label: "Weekly Surprise Pool", value: "30%", color: "bg-walawow-purple" },
+                  { label: "Monthly Spectacular", value: "20%", color: "bg-walawow-purple-light" },
+                  { label: "Liquidity Allocation", value: "20%", color: "bg-walawow-purple/70" },
+                  { label: "Staking Rewards", value: "20%", color: "bg-walawow-gold" },
+                  { label: "Ecosystem Fund", value: "10%", color: "bg-walawow-gold/80" }
+                ].map((item, index) => (
+                  <div key={index} className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-walawow-neutral-text-secondary">{item.label}</span>
+                      <span className="font-semibold text-white">{item.value}</span>
+                    </div>
+                    <div className="h-2 bg-walawow-neutral-card rounded-full overflow-hidden">
+                      <div 
+                        className={`h-full ${item.color} rounded-full transition-all duration-1000`}
+                        style={{ width: item.value }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div className="space-y-3">
-          <h3 className="text-xl font-semibold text-white">2.2 Participation Rules: Hold to Participate</h3>
-          <p className="text-walawow-neutral-text-secondary text-lg leading-relaxed">
-            Simply holding $WALAWOW qualifies a wallet for pool distribution (subject to a minimum holding threshold to
-            prevent dust attacks). Eligible addresses are included in each pre-draw snapshot.
-          </p>
+      {/* Token Details */}
+      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-gold to-walawow-gold-dark flex items-center justify-center">
+            <Gift className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">3.2 Token Details: Fair Launch</h2>
         </div>
-
-        <div className="space-y-3">
-          <h3 className="text-xl font-semibold text-white">2.3 Distribution Rules (Lucky Mechanism)</h3>
-          <ul className="text-walawow-neutral-text-secondary text-lg leading-relaxed space-y-2">
-            <li>Prize Rule: No upper or lower limit; every round is guaranteed. One winner per round.</li>
-            <li>If no triggerer exists, the winner receives 100% of the prize.</li>
-            <li>Snapshot: Every Friday UTC 08:00 (4 hours before the draw).</li>
-            <li>Trigger: Every Friday UTC 12:00. The first triggerer receives 5%, the winner receives 95%.</li>
-            <li>Fallback: If no one triggers by UTC 13:00, the keeper executes with no trigger reward.</li>
-            <li>V2: Triggerer receives the “Lucky Messenger” title and a paired NFT with the winner.</li>
-            <li>Randomness: Switchboard VRF coordinator callback fulfill_randomness; randomness is tamper-proof.</li>
-            <li>Probability: Weighted by holding size. See <Link href="/draw-logic" className="text-walawow-gold hover:underline">Draw Logic Details</Link>.</li>
-            <li>Claiming: Rewards are claimed at www.walawowo.fun. After any claim, rewards are distributed to each address.</li>
-            <li>Unclaimed: If no one claims by 8 hours before the next draw, funds return to the distributor for redistribution.</li>
-          </ul>
+        
+        <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <div className="glass-card p-6 rounded-2xl border border-walawow-neutral-border/50">
+              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-walawow-purple/20 flex items-center justify-center">
+                  <ScrollText className="h-4 w-4 text-walawow-purple-light" />
+                </div>
+                <span className="title-gradient text-lg">Token Properties</span>
+              </h3>
+              <div className="space-y-4">
+                <div className="flex justify-between items-center p-3 rounded-lg bg-walawow-purple/10">
+                  <span className="text-walawow-neutral-text-secondary">Name:</span>
+                  <span className="font-bold text-walawow-purple-light">$WALAWOW</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-walawow-gold/10">
+                  <span className="text-walawow-neutral-text-secondary">Standard:</span>
+                  <span className="font-bold text-walawow-gold">Token-2022</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-walawow-gold/10">
+                  <span className="text-walawow-neutral-text-secondary">Total Supply:</span>
+                  <span className="font-bold text-walawow-gold">1,000,000,000</span>
+                </div>
+                <div className="flex justify-between items-center p-3 rounded-lg bg-walawow-purple/10">
+                  <span className="text-walawow-neutral-text-secondary">Blockchain:</span>
+                  <span className="font-bold text-walawow-purple-light">Solana</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div>
+            <div className="glass-card p-6 rounded-2xl border border-walawow-neutral-border/50">
+              <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
+                <div className="h-8 w-8 rounded-lg bg-walawow-gold/20 flex items-center justify-center">
+                  <Users className="h-4 w-4 text-walawow-gold" />
+                </div>
+                <span className="title-gradient text-lg">Community Distribution</span>
+              </h3>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-walawow-neutral-text-secondary">Initial Liquidity:</span>
+                    <span className="font-bold text-white">80%</span>
+                  </div>
+                  <div className="h-2 bg-walawow-neutral-card rounded-full overflow-hidden">
+                    <div className="h-full bg-walawow-purple rounded-full" style={{ width: '80%' }}></div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-walawow-neutral-text-secondary">Community & Incentives:</span>
+                    <span className="font-bold text-white">10%</span>
+                  </div>
+                  <div className="h-2 bg-walawow-neutral-card rounded-full overflow-hidden">
+                    <div className="h-full bg-walawow-gold rounded-full" style={{ width: '10%' }}></div>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-walawow-neutral-text-secondary">Development:</span>
+                    <span className="font-bold text-white">10%</span>
+                  </div>
+                  <div className="h-2 bg-walawow-neutral-card rounded-full overflow-hidden">
+                    <div className="h-full bg-walawow-purple-light rounded-full" style={{ width: '10%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      {/* Technical Architecture */}
       <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Gift className="h-6 w-6 text-walawow-gold" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">3. Token Information: Fair Launch</h2>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple-light to-walawow-gold flex items-center justify-center">
+            <Shield className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">4. Technical Architecture</h2>
         </div>
+
         <div className="grid md:grid-cols-2 gap-6 text-walawow-neutral-text-secondary">
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">Token Basics</div>
-            <ul className="space-y-1 text-sm">
-              <li>Name: $WALAWOW (Token-2022)</li>
-              <li>Total Supply: 1,000,000,000</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">Allocation</div>
-            <ul className="space-y-1 text-sm">
-              <li>80% - Initial liquidity (LP burned, permanently locked)</li>
-              <li>10% - Airdrops & marketing incentives</li>
-              <li>10% - Team & future development (12-month linear vest)</li>
-            </ul>
-          </div>
+          {[
+            {
+              title: 'Token (Token-2022 + Transfer Fee)',
+              desc: 'Transfer Fee withheld on Token-2022 accounts.'
+            },
+            {
+              title: 'Harvest',
+              desc: 'Batch harvests withheld fees to mint and withdraws to swap_tax_vault.'
+            },
+            {
+              title: 'Swap',
+              desc: 'Off-chain WALAWOW -> USDC swap; on-chain forward_usdc routes USDC to distributor_vault.'
+            },
+            {
+              title: 'Distributor',
+              desc: 'Allocates USDC by BPS into weekly/monthly staging vaults and other pools; releases staging in snapshot window.'
+            },
+            {
+              title: 'Pool',
+              desc: 'Handles snapshots, draw window, Switchboard VRF randomness, claim, and unclaimed recycle.'
+            },
+            {
+              title: 'Off-chain Indexer & Keeper',
+              desc: 'Builds Merkle snapshots, triggers harvest/swap/distribution, and provides draw fallback.'
+            }
+          ].map((item, index) => (
+            <div key={index} className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
+              <div className="font-semibold text-white mb-2">{item.title}</div>
+              <div className="text-sm">{item.desc}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 text-sm text-walawow-neutral-text-secondary">
+          For a step-by-step breakdown, see{' '}
+          <Link href="/draw-logic" className="text-walawow-gold hover:underline">
+            开奖逻辑详解
+          </Link>
+          .
         </div>
       </section>
 
+      {/* Roadmap */}
       <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Globe className="h-6 w-6 text-walawow-purple-light" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">4. Core Vision: From Entertainment to Infrastructure</h2>
-        </div>
-        <ul className="text-walawow-neutral-text-secondary text-lg leading-relaxed space-y-2">
-          <li>V1 - Wealth Effect Phase: ignite attention with visible aggregation, build consensus and liquidity.</li>
-          <li>V2 - Value Consolidation Phase: introduce staking and yield scenarios for sustainable value support.</li>
-          <li>V3 - Perpetual Protocol Phase: gradually transfer DAO control for full decentralization.</li>
-        </ul>
-      </section>
-
-      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Rocket className="h-6 w-6 text-walawow-gold" />
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-purple-dark flex items-center justify-center">
+            <Rocket className="h-5 w-5 text-white" />
+          </div>
           <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">5. Roadmap</h2>
         </div>
-        <div className="space-y-6 text-walawow-neutral-text-secondary">
-          <div>
-            <div className="text-white font-semibold mb-2">Phase 1: Launch</div>
-            <ul className="space-y-1 text-sm">
-              <li>Complete core contract deployment and security audits.</li>
-              <li>Fair launch, create initial liquidity, burn LP tokens.</li>
-              <li>Weekly/monthly draw flows live (indexer + VRF + claim).</li>
-            </ul>
-          </div>
-          <div>
-            <div className="text-white font-semibold mb-2">Phase 2: Growth & Consolidation</div>
-            <ul className="space-y-1 text-sm">
-              <li>Improve staking and ecosystem distribution modules.</li>
-              <li>Mobile trigger tools and NFT ecosystem.</li>
-              <li>Establish community governance framework.</li>
-            </ul>
-          </div>
-          <div>
-            <div className="text-white font-semibold mb-2">Phase 3: Autonomy</div>
-            <ul className="space-y-1 text-sm">
-              <li>Launch DAO governance.</li>
-              <li>Gradually transfer contract permissions to the community.</li>
-              <li>Host frontend on decentralized networks for long-term autonomy.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="h-6 w-6 text-walawow-purple-light" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">6. Disclaimer & Risk Notice</h2>
-        </div>
-        <p className="text-walawow-neutral-text-secondary text-lg leading-relaxed">
-          Crypto investments carry high risk. Walawow Protocol is experimental. Users should participate only after
-          fully understanding the mechanism and risks and based on their own risk tolerance.
-        </p>
-      </section>
-
-      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Zap className="h-6 w-6 text-walawow-gold" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Draw Logic Details</h2>
-        </div>
-        <div className="space-y-8 text-walawow-neutral-text-secondary">
-          <div>
-            <div className="text-white font-semibold mb-2">Step 1: Preparation — Snapshot & Merkle Tree</div>
-            <ul className="space-y-1 text-sm">
-              <li>Off-chain indexer records all $WALAWOW holders and balances during the snapshot window.</li>
-              <li>Liquidity pool addresses, CEX addresses, team locks, and contract addresses are excluded.</li>
-              <li>Build a Merkle tree where each leaf is (address, balance).</li>
-              <li>Submit the Merkle root, total effective weight, and snapshot block height on-chain.</li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-white font-semibold mb-2">Step 2: Draw & Randomness Request</div>
-            <ul className="space-y-1 text-sm">
-              <li>Any community member can call draw_winner during the draw window.</li>
-              <li>The first successful triggerer is recorded and receives 5% of the prize.</li>
-              <li>draw_winner requests Switchboard VRF; the coordinator later calls fulfill_randomness.</li>
-              <li>The pool enters “waiting for randomness” to prevent repeated requests.</li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-white font-semibold mb-2">Step 3: Switchboard VRF Randomness</div>
-            <ul className="space-y-1 text-sm">
-              <li>Randomness is 32 bytes (256-bit), verifiable and tamper-proof on-chain.</li>
-              <li>The contract validates the request ID and coordinator address to ensure authenticity.</li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-white font-semibold mb-2">Step 4: Winner Selection by Weight</div>
-            <ul className="space-y-1 text-sm">
-              <li>winning_index = randomness % total_weight.</li>
-              <li>Balances create continuous ranges; the address whose cumulative balance first exceeds winning_index wins.</li>
-            </ul>
-            <div className="mt-3 text-sm">
-              Example: A=1,000, B=2,000, C=7,000, total=10,000, winning_index=5,678 ⇒ winner is C.
-            </div>
-            <div className="mt-2 text-sm">
-              Probabilities: A 10%, B 20%, C 70%.
-            </div>
-          </div>
-
-          <div>
-            <div className="text-white font-semibold mb-2">Final Step: Verification & Payout</div>
-            <ul className="space-y-1 text-sm">
-              <li>Anyone can call claim_prize with the winner address and Merkle proof.</li>
-              <li>The pool distributes USDT/SOL to the winner and triggerer.</li>
-              <li>Unclaimed funds can be recycled to distributor_vault after the claim window.</li>
-            </ul>
-          </div>
-
-          <div>
-            <div className="text-white font-semibold mb-2">Decentralized Trigger Scheme</div>
-            <div className="text-sm mb-3">
-              Open-source trigger scripts allow anyone to compete to trigger draw_winner at the scheduled time. The
-              first confirmed transaction wins the trigger reward, while keeper_draw provides a fallback after the
-              draw window ends.
-            </div>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-              <div className="glass-card p-4 rounded-xl border border-walawow-neutral-border/50">
-                <div className="text-white font-semibold mb-2">Core Mechanism</div>
-                <ul className="space-y-1">
-                  <li>Open-source trigger scripts for community members.</li>
-                  <li>All nodes race at the scheduled draw time.</li>
-                  <li>First confirmed transaction wins the reward.</li>
-                  <li>Reward is 5% of the round’s prize.</li>
-                </ul>
+        
+        <div className="space-y-8">
+          {[
+            {
+              phase: "P1",
+              title: "Launch Phase",
+              color: "from-walawow-purple to-walawow-purple-dark",
+              achievements: [
+                "Complete contract deployment and security audits",
+                "Fair launch with initial liquidity",
+                "V1 surprise pool system goes live"
+              ]
+            },
+            {
+              phase: "P2",
+              title: "Growth Phase",
+              color: "from-walawow-gold to-walawow-gold-dark",
+              achievements: [
+                "Launch staking with surprise multipliers",
+                "Mobile trigger tools and NFT ecosystem",
+                "Establish community governance"
+              ]
+            },
+            {
+              phase: "P3",
+              title: "Protocol Autonomy",
+              color: "from-walawow-purple-light to-walawow-gold",
+              achievements: [
+                "Launch decentralized governance (DAO)",
+                "Gradual transfer of governance controls to the community",
+                "Host frontend on decentralized networks"
+              ]
+            }
+          ].map((journey, index) => (
+            <div key={index} className="flex items-start gap-6">
+              <div className={`flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br ${journey.color} flex items-center justify-center`}>
+                <span className="text-white font-bold text-lg">{journey.phase}</span>
               </div>
-              <div className="glass-card p-4 rounded-xl border border-walawow-neutral-border/50">
-                <div className="text-white font-semibold mb-2">Advantages</div>
-                <ul className="space-y-1">
-                  <li>Truly decentralized trigger control.</li>
-                  <li>Strong incentives for community participation.</li>
-                  <li>Compelling narrative: the protocol does not need the team to trigger draws.</li>
-                  <li>Self-sustaining: rewards are paid from the pool itself.</li>
-                  <li>High censorship resistance with globally distributed nodes.</li>
-                </ul>
-              </div>
-              <div className="glass-card p-4 rounded-xl border border-walawow-neutral-border/50">
-                <div className="text-white font-semibold mb-2">Considerations</div>
-                <ul className="space-y-1">
-                  <li>Reward amount: 5% of the round prize.</li>
-                  <li>Anti-spam: trigger scripts should only send near the scheduled time.</li>
-                  <li>Priority fees create healthy competition and must cover execution costs.</li>
-                  <li>Fault tolerance: contract must gracefully reject repeated triggers.</li>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold text-white mb-3">{journey.title}</h3>
+                <ul className="space-y-2">
+                  {journey.achievements.map((achievement, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <div className={`h-2 w-2 rounded-full mt-2 ${journey.color.includes('purple') ? 'bg-walawow-purple-light' : 'bg-walawow-gold'}`}></div>
+                      <span className="text-walawow-neutral-text-secondary">{achievement}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </section>
 
-          <div className="text-sm">
-            See also: <Link href="/draw-logic" className="text-walawow-gold hover:underline">Draw Logic Details</Link>.
+      {/* Disclaimer */}
+      <section className="glass-card p-8 md:p-10 rounded-3xl border border-red-500/30 bg-gradient-to-br from-red-500/10 to-red-600/10">
+        <div className="flex items-center gap-3 mb-8">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center">
+            <Shield className="h-5 w-5 text-white" />
+          </div>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">6. Important Risk Warnings</h2>
+        </div>
+        
+        <div className="text-walawow-neutral-text-secondary space-y-6 text-lg leading-relaxed">
+          <p>
+            Crypto participation involves significant risks. Walawow is an experimental protocol. 
+            Community members should participate only after understanding the mechanisms and potential risks.
+          </p>
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-yellow-500/10 to-yellow-600/10 border border-yellow-500/30">
+            <div className="flex items-center gap-3 mb-3">
+              <Lock className="h-6 w-6 text-yellow-400" />
+              <h3 className="text-lg font-semibold text-yellow-400">Critical Risk Notice</h3>
+            </div>
+            <p className="text-yellow-300 font-semibold">
+              🚨 Never invest more than you can afford to lose. The protocol is experimental 
+              and carries inherent risks of smart contracts and market volatility.
+            </p>
+          </div>
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-walawow-neutral-card border border-walawow-neutral-border">
+            <Sparkles className="h-5 w-5 text-walawow-purple-light" />
+            <p className="text-sm">
+              Remember: Value comes from community participation, transparent mechanics, and shared outcomes.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="glass-card p-8 md:p-10 rounded-3xl border border-walawow-neutral-border">
-        <div className="flex items-center gap-3 mb-6">
-          <Shield className="h-6 w-6 text-walawow-gold" />
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">Technical Whitepaper: Smart Contract Modules</h2>
-        </div>
-        <div className="grid md:grid-cols-2 gap-6 text-walawow-neutral-text-secondary">
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">1. Token Contract (Token-2022 Mint + Transfer Fee)</div>
-            <ul className="space-y-1 text-sm">
-              <li>Implements Token-2022 standard.</li>
-              <li>Enables Transfer Fee; taxes are withheld on Token-2022 accounts.</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">2. Tax Harvest Contract (Walawow Harvest)</div>
-            <ul className="space-y-1 text-sm">
-              <li>Batch harvests withheld taxes to the mint.</li>
-              <li>Withdraws from mint to swap_tax_vault (WALAWOW).</li>
-              <li>Rate limits and account checks prevent abuse.</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">3. Swap & Forward Contract (Walawow Swap)</div>
-            <ul className="space-y-1 text-sm">
-              <li>WALAWOW → USDC swap happens off-chain (no DEX CPI on-chain).</li>
-              <li>forward_usdc transfers swap_usdc_vault to distributor_vault.</li>
-              <li>Supports threshold and minimum interval parameters.</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">4. Distribution Contract (Walawow Distributor)</div>
-            <ul className="space-y-1 text-sm">
-              <li>Distributes USDC by BPS into weekly/monthly staging vaults and staking/liquidity/team pools.</li>
-              <li>Releases staging funds into pool vaults during snapshot windows.</li>
-              <li>Distribution ratios and target accounts are admin-updatable.</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">5. Pool Manager Contract (Walawow Pool)</div>
-            <ul className="space-y-1 text-sm">
-              <li>Manages weekly/monthly pools, rounds, and state.</li>
-              <li>Stores Merkle root, total weight, and snapshot block.</li>
-              <li>draw_winner in draw_window, records triggerer, requests VRF.</li>
-              <li>keeper_draw after draw_window with no trigger reward.</li>
-              <li>claim_prize validates Merkle proof and pays winner + triggerer.</li>
-              <li>recycle_unclaimed returns unclaimed funds to distributor_vault.</li>
-            </ul>
-          </div>
-          <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
-            <div className="text-white font-semibold mb-2">6. Off-chain Indexer & Keeper</div>
-            <ul className="space-y-1 text-sm">
-              <li>Builds holder snapshots and submits Merkle roots.</li>
-              <li>Triggers harvest and swap, then forwards to distributor.</li>
-              <li>Calls distribute and release_staging_funds.</li>
-              <li>Calls keeper_draw after the draw window if needed.</li>
-            </ul>
+      {/* Final Call */}
+      <div className="text-center py-8">
+        <div className="inline-flex flex-col items-center gap-6 p-10 rounded-3xl 
+          bg-gradient-to-br from-walawow-purple/20 via-walawow-purple/10 to-walawow-gold/20 
+          border border-walawow-purple/30 max-w-2xl">
+          <div className="text-6xl animate-float">📜</div>
+          <h3 className="text-3xl font-bold text-white">Ready for Surprise Rewards?</h3>
+          <p className="text-walawow-neutral-text-secondary text-lg">
+            Join the community building transparent, on-chain reward moments together.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4 mt-4">
+            <button className="btn-gold px-8 py-3">
+              Begin Your Journey →
+            </button>
+            <button className="btn-outline px-8 py-3">
+              Read Community Updates
+            </button>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   )
 }
