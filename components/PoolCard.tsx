@@ -15,7 +15,7 @@ interface PoolCardProps {
 }
 
 export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' }: PoolCardProps) {
-  const { poolBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
+  const { poolVaultBalance, stagingVaultBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
   const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
   const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
@@ -90,6 +90,12 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
     return 'btn-gold hover:shadow-lg hover:scale-[1.02] active:scale-95'
   }
 
+  const getPrizeStatus = () => {
+    if (poolVaultBalance > 0 && poolInfo.poolState === 'ReadyToClaim') return 'Unclaimed'
+    if (poolInfo.lastPrizeAmount > 0 && poolInfo.lastPaidAmount >= poolInfo.lastPrizeAmount) return 'Claimed'
+    return 'Pending'
+  }
+
   // 骨架屏加载状态
   if (loading) {
     return (
@@ -149,17 +155,32 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
       )}
 
       <div className="space-y-6">
-        {/* 当前奖金池 */}
-        <div className={`p-4 rounded-xl ${theme.bg} border ${theme.border}`}>
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Coins className={`h-5 w-5 ${theme.light}`} />
-              <span className="data-label">Current Prize Pool</span>
+        {/* 资金展示 */}
+        <div className="grid grid-cols-1 gap-4">
+          <div className={`p-4 rounded-xl ${theme.bg} border ${theme.border}`}>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Coins className={`h-5 w-5 ${theme.light}`} />
+                <span className="data-label">Accumulated (Staging)</span>
+              </div>
             </div>
-            <div className="h-2 w-2 rounded-full bg-walawow-gold animate-pulse"></div>
+            <div className={`text-2xl font-bold ${theme.light}`}>
+              ${stagingVaultBalance.toLocaleString()}
+            </div>
           </div>
-          <div className={`text-3xl font-bold ${theme.light}`}>
-            ${poolBalance.toLocaleString()}
+          <div className="glass-card p-4 border border-walawow-neutral-border/50">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Coins className="h-5 w-5 text-walawow-gold" />
+                <span className="data-label">Current Prize (Pool Vault)</span>
+              </div>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary">
+                {getPrizeStatus()}
+              </span>
+            </div>
+            <div className="text-2xl font-bold text-walawow-gold">
+              ${poolVaultBalance.toLocaleString()}
+            </div>
           </div>
         </div>
 
@@ -218,7 +239,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
             <p className="text-walawow-neutral-text-secondary">
               Trigger reward: <span className="text-walawow-gold font-bold">{(poolInfo.feeBpsTriggerer / 100).toFixed(2)}%</span>
               <span className="block text-walawow-gold-light">
-                (${(poolBalance * (poolInfo.feeBpsTriggerer / 10000)).toLocaleString()})
+                (${(poolVaultBalance * (poolInfo.feeBpsTriggerer / 10000)).toLocaleString()})
               </span>
             </p>
           </div>
