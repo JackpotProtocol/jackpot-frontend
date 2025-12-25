@@ -8,7 +8,8 @@ import { getPoolVaultPDA } from '../utils/programs'
 
 export function usePoolBalance(poolType: 'weekly' | 'monthly') {
   const { connection } = useConnection()
-  const [poolBalance, setPoolBalance] = useState(0)
+  const [poolVaultBalance, setPoolVaultBalance] = useState(0)
+  const [stagingVaultBalance, setStagingVaultBalance] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -25,7 +26,7 @@ export function usePoolBalance(poolType: 'weekly' | 'monthly') {
             : WALAWOW_PROTOCOL_ADDRESSES.POOL_MONTHLY
         )
 
-        // 计算 vault PDA
+        // 计算 pool vault PDA
         const [vaultPDA] = getPoolVaultPDA(poolAddress)
 
         console.log(`🔍 Fetching ${poolType} pool vault:`, vaultPDA.toString())
@@ -35,7 +36,7 @@ export function usePoolBalance(poolType: 'weekly' | 'monthly') {
           const vaultBalance = await connection.getTokenAccountBalance(vaultPDA)
           const balance = vaultBalance.value.uiAmount || 0
           console.log(`💰 ${poolType} pool balance:`, balance)
-          setPoolBalance(balance)
+          setPoolVaultBalance(balance)
         } catch (vaultErr: any) {
           // 如果 vault 不存在或读取失败，尝试降级方案
           console.warn(`⚠️ Could not fetch vault balance, using fallback:`, vaultErr.message)
@@ -44,17 +45,33 @@ export function usePoolBalance(poolType: 'weekly' | 'monthly') {
           try {
             const usdcMint = new PublicKey(WALAWOW_PROTOCOL_ADDRESSES.USDC_MINT)
             // 这里可以添加其他降级逻辑
-            setPoolBalance(0)
+            setPoolVaultBalance(0)
           } catch {
             // 最终降级：使用 0
-            setPoolBalance(0)
+            setPoolVaultBalance(0)
           }
+        }
+
+        // 获取 staging vault 余额
+        const stagingVault = new PublicKey(
+          poolType === 'weekly'
+            ? WALAWOW_PROTOCOL_ADDRESSES.WEEKLY_STAGING_VAULT
+            : WALAWOW_PROTOCOL_ADDRESSES.MONTHLY_STAGING_VAULT
+        )
+        try {
+          const stagingBalance = await connection.getTokenAccountBalance(stagingVault)
+          const balance = stagingBalance.value.uiAmount || 0
+          setStagingVaultBalance(balance)
+        } catch (stagingErr: any) {
+          console.warn(`⚠️ Could not fetch staging balance, using fallback:`, stagingErr.message)
+          setStagingVaultBalance(0)
         }
 
       } catch (err: any) {
         console.error(`❌ Error fetching ${poolType} pool balance:`, err)
         setError(err.message)
-        setPoolBalance(0)
+        setPoolVaultBalance(0)
+        setStagingVaultBalance(0)
       } finally {
         setLoading(false)
       }
@@ -67,5 +84,5 @@ export function usePoolBalance(poolType: 'weekly' | 'monthly') {
     return () => clearInterval(interval)
   }, [poolType, connection])
 
-  return { poolBalance, loading, error }
+  return { poolVaultBalance, stagingVaultBalance, loading, error }
 }
