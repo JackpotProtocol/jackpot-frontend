@@ -2,6 +2,7 @@
 'use client'
 import { useDrawTrigger } from '../../hooks/useDrawTrigger'
 import { useTriggerEligibility } from '../../hooks/useTriggerEligibility'
+import { usePoolInfo } from '../../hooks/usePoolInfo'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Zap, Trophy, Clock, Target, AlertTriangle, CheckCircle, Sparkles, Timer, Award } from 'lucide-react'
 
@@ -9,11 +10,37 @@ export default function TriggerPage() {
   const { publicKey } = useWallet()
   const weeklyEligibility = useTriggerEligibility('weekly')
   const monthlyEligibility = useTriggerEligibility('monthly')
+  const { poolInfo: weeklyPoolInfo } = usePoolInfo('weekly')
+  const { poolInfo: monthlyPoolInfo } = usePoolInfo('monthly')
   const { triggerDraw, triggering, error, success } = useDrawTrigger()
+
+  const formatUtcDate = (date: Date | null) => {
+    if (!date) return 'Schedule not available'
+    return date.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC',
+    }) + ' UTC'
+  }
+
+  const formatWindowEnd = (date: Date | null, drawWindow: number) => {
+    if (!date || drawWindow <= 0) return 'Schedule not available'
+    const end = new Date(date.getTime() + drawWindow * 1000)
+    return formatUtcDate(end)
+  }
+
+  const formatWindowStatus = (isOpen: boolean, timeUntil: string) => {
+    if (isOpen) return 'The trigger window is open. Submit your trigger now.'
+    if (timeUntil.includes('Awaiting')) return 'Awaiting the next round.'
+    return `The window opens in ${timeUntil}`
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-12 px-4 py-8">
-      {/* Magical Header */}
+      {/* Trigger Header */}
       <div className="text-center relative">
         <div className="absolute -top-10 left-1/4 h-40 w-40 bg-walawow-purple/10 rounded-full blur-3xl"></div>
         <div className="absolute top-10 right-1/4 h-32 w-32 bg-walawow-gold/5 rounded-full blur-3xl"></div>
@@ -21,44 +48,44 @@ export default function TriggerPage() {
         <div className="flex items-center justify-center gap-3 mb-4">
           <Zap className="h-10 w-10 text-walawow-purple-light animate-pulse" />
           <h1 className="title-gradient text-4xl md:text-5xl font-bold">
-            Cast the Surprise Spell
+            Trigger the Surprise Draw
           </h1>
           <Zap className="h-10 w-10 text-walawow-gold animate-pulse" />
         </div>
         <p className="text-xl text-walawow-neutral-text-secondary max-w-3xl mx-auto">
-          Be the first to cast the magic spell and earn <span className="text-walawow-gold font-semibold">5% of the treasure</span> as your reward!
+          Be the first to trigger the draw and earn <span className="text-walawow-gold font-semibold">the configured share of the prize pool</span> as your reward!
         </p>
       </div>
 
-      {/* How Spellcasting Works */}
+      {/* How Triggering Works */}
       <div className="glass-card p-8 rounded-3xl border border-walawow-neutral-border">
         <div className="flex items-center gap-3 mb-8">
           <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-walawow-purple to-walawow-purple-dark flex items-center justify-center">
             <Target className="h-5 w-5 text-white" />
           </div>
-          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">✨ How Spellcasting Works</h2>
+          <h2 className="section-title text-2xl md:text-3xl !border-0 !pl-0">How Triggering Works</h2>
         </div>
         
         <div className="grid md:grid-cols-3 gap-8 text-center">
           {[
             {
               icon: <Clock className="h-8 w-8" />,
-              title: "Magical Timing",
-              description: "Every Friday 12:00-13:00 UTC",
+              title: "Trigger Window",
+              description: "Trigger window follows the pool schedule",
               color: "from-walawow-purple/20 to-walawow-purple/5",
               iconColor: "text-walawow-purple-light"
             },
             {
               icon: <Trophy className="h-8 w-8" />,
-              title: "Enchanter's Reward",
-              description: "5% of the treasure to the first spellcaster",
+              title: "Trigger Reward",
+              description: "Configured share of the prize pool to the first triggerer",
               color: "from-walawow-gold/20 to-walawow-gold/5",
               iconColor: "text-walawow-gold"
             },
             {
               icon: <Zap className="h-8 w-8" />,
-              title: "Arcane Speed",
-              description: "Fastest spell wins the enchantment",
+              title: "First Confirmation Wins",
+              description: "Fastest valid trigger wins the reward",
               color: "from-walawow-purple/15 to-walawow-gold/10",
               iconColor: "text-walawow-purple-light"
             }
@@ -79,17 +106,17 @@ export default function TriggerPage() {
         </div>
       </div>
 
-      {/* Spell Casting Cards */}
+      {/* Trigger Cards */}
       <div className="grid md:grid-cols-2 gap-8">
-        {/* Weekly Magic Pool */}
+        {/* Weekly Pool */}
         <div className={`glass-card p-8 rounded-3xl border ${weeklyEligibility.isWithinTriggerWindow ? 'border-walawow-gold/50 glow-gold' : 'border-walawow-neutral-border'}`}>
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-2xl font-bold text-white mb-1">Weekly Surprise</h3>
-              <p className="text-walawow-neutral-text-secondary text-sm">Cast the spell for weekly magic</p>
+              <p className="text-walawow-neutral-text-secondary text-sm">Trigger the weekly draw</p>
             </div>
             <span className="bg-gradient-to-r from-walawow-purple to-walawow-purple-dark text-white px-4 py-2 rounded-full text-sm font-bold">
-              Weekly Enchantment
+              Weekly Draw
             </span>
           </div>
           
@@ -97,12 +124,12 @@ export default function TriggerPage() {
             {/* Status Display */}
             <div className={`text-center p-5 rounded-2xl ${weeklyEligibility.isWithinTriggerWindow ? 'bg-walawow-gold/10 border border-walawow-gold/30' : 'bg-walawow-purple/10 border border-walawow-purple/30'}`}>
               <div className={`text-3xl font-bold mb-2 ${weeklyEligibility.isWithinTriggerWindow ? 'text-walawow-gold animate-pulse' : 'text-walawow-purple-light'}`}>
-                {weeklyEligibility.isWithinTriggerWindow ? '⚡ SPELLCASTING OPEN' : '🌀 SPELL DORMANT'}
+                {weeklyEligibility.isWithinTriggerWindow ? '⚡ TRIGGER WINDOW OPEN' : '🌀 WINDOW CLOSED'}
               </div>
               <div className="text-walawow-neutral-text-secondary">
                 {weeklyEligibility.isWithinTriggerWindow 
-                  ? 'The magical window is open! Cast your spell now!' 
-                  : `The portal opens in ${weeklyEligibility.timeUntilTrigger}`
+                  ? 'The trigger window is open. Submit your trigger now.' 
+                  : formatWindowStatus(false, weeklyEligibility.timeUntilTrigger)
                 }
               </div>
             </div>
@@ -111,16 +138,16 @@ export default function TriggerPage() {
             <div className="glass-card p-5 rounded-2xl border border-walawow-neutral-border/50">
               <div className="flex items-center gap-3 mb-4">
                 <Timer className="h-5 w-5 text-walawow-neutral-text-secondary" />
-                <h4 className="font-semibold text-white">Magical Schedule</h4>
+                <h4 className="font-semibold text-white">Draw Schedule</h4>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-walawow-neutral-text-secondary">Next Spellcasting:</span>
-                  <span className="text-white font-medium">Friday 12:00 UTC</span>
+                  <span className="text-walawow-neutral-text-secondary">Next Trigger Window:</span>
+                  <span className="text-white font-medium">{formatUtcDate(weeklyPoolInfo.nextDrawTime)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-walawow-neutral-text-secondary">Portal Closes:</span>
-                  <span className="text-white font-medium">Friday 13:00 UTC</span>
+                  <span className="text-walawow-neutral-text-secondary">Window Closes:</span>
+                  <span className="text-white font-medium">{formatWindowEnd(weeklyPoolInfo.nextDrawTime, weeklyPoolInfo.drawWindow)}</span>
                 </div>
               </div>
             </div>
@@ -140,37 +167,37 @@ export default function TriggerPage() {
               {!publicKey ? (
                 <div className="flex items-center justify-center gap-2">
                   <Sparkles className="h-5 w-5" />
-                  Connect Wallet to Cast
+                  Connect Wallet to Trigger
                 </div>
               ) : triggering ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Casting Weekly Spell...
+                  Triggering Weekly Draw...
                 </div>
               ) : weeklyEligibility.isWithinTriggerWindow ? (
                 <div className="flex items-center justify-center gap-2">
                   <Zap className="h-5 w-5" />
-                  Cast Weekly Spell
+                  Trigger Weekly Draw
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Portal Opens Soon
+                  Window Opens Soon
                 </div>
               )}
             </button>
           </div>
         </div>
 
-        {/* Monthly Magic Pool */}
+        {/* Monthly Pool */}
         <div className={`glass-card p-8 rounded-3xl border ${monthlyEligibility.isWithinTriggerWindow ? 'border-walawow-gold/50 glow-gold' : 'border-walawow-neutral-border'}`}>
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="text-2xl font-bold text-white mb-1">Monthly Spectacular</h3>
-              <p className="text-walawow-neutral-text-secondary text-sm">Cast the spell for monthly grandeur</p>
+              <p className="text-walawow-neutral-text-secondary text-sm">Trigger the monthly draw</p>
             </div>
             <span className="bg-gradient-to-r from-walawow-gold to-walawow-gold-dark text-walawow-neutral-bg px-4 py-2 rounded-full text-sm font-bold">
-              Grand Enchantment
+              Monthly Draw
             </span>
           </div>
           
@@ -178,12 +205,12 @@ export default function TriggerPage() {
             {/* Status Display */}
             <div className={`text-center p-5 rounded-2xl ${monthlyEligibility.isWithinTriggerWindow ? 'bg-walawow-gold/10 border border-walawow-gold/30' : 'bg-walawow-purple/10 border border-walawow-purple/30'}`}>
               <div className={`text-3xl font-bold mb-2 ${monthlyEligibility.isWithinTriggerWindow ? 'text-walawow-gold animate-pulse' : 'text-walawow-purple-light'}`}>
-                {monthlyEligibility.isWithinTriggerWindow ? '⚡ SPELLCASTING OPEN' : '🌀 SPELL DORMANT'}
+                {monthlyEligibility.isWithinTriggerWindow ? '⚡ TRIGGER WINDOW OPEN' : '🌀 WINDOW CLOSED'}
               </div>
               <div className="text-walawow-neutral-text-secondary">
                 {monthlyEligibility.isWithinTriggerWindow 
-                  ? 'The grand magical window is open! Cast your spell now!' 
-                  : `The grand portal opens in ${monthlyEligibility.timeUntilTrigger}`
+                  ? 'The monthly trigger window is open. Submit your trigger now.' 
+                  : formatWindowStatus(false, monthlyEligibility.timeUntilTrigger)
                 }
               </div>
             </div>
@@ -196,12 +223,12 @@ export default function TriggerPage() {
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <span className="text-walawow-neutral-text-secondary">Next Spellcasting:</span>
-                  <span className="text-white font-medium">Last Friday 12:00 UTC</span>
+                  <span className="text-walawow-neutral-text-secondary">Next Trigger Window:</span>
+                  <span className="text-white font-medium">{formatUtcDate(monthlyPoolInfo.nextDrawTime)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-walawow-neutral-text-secondary">Portal Closes:</span>
-                  <span className="text-white font-medium">Last Friday 13:00 UTC</span>
+                  <span className="text-walawow-neutral-text-secondary">Window Closes:</span>
+                  <span className="text-white font-medium">{formatWindowEnd(monthlyPoolInfo.nextDrawTime, monthlyPoolInfo.drawWindow)}</span>
                 </div>
               </div>
             </div>
@@ -226,17 +253,17 @@ export default function TriggerPage() {
               ) : triggering ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                  Casting Grand Spell...
+                  Triggering Monthly Draw...
                 </div>
               ) : monthlyEligibility.isWithinTriggerWindow ? (
                 <div className="flex items-center justify-center gap-2">
                   <Zap className="h-5 w-5" />
-                  Cast Grand Spell
+                  Trigger Monthly Draw
                 </div>
               ) : (
                 <div className="flex items-center justify-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Grand Portal Opens Soon
+                  Monthly Window Opens Soon
                 </div>
               )}
             </button>
@@ -249,7 +276,7 @@ export default function TriggerPage() {
         <div className="glass-card p-6 rounded-3xl border border-red-500/30 bg-gradient-to-r from-red-500/10 to-red-600/10">
           <div className="flex items-center gap-3 mb-3">
             <AlertTriangle className="h-6 w-6 text-red-400" />
-            <h3 className="text-lg font-semibold text-red-400">Spell Backlash</h3>
+            <h3 className="text-lg font-semibold text-red-400">Trigger Error</h3>
           </div>
           <p className="text-red-300">{error}</p>
         </div>
@@ -259,31 +286,31 @@ export default function TriggerPage() {
         <div className="glass-card p-6 rounded-3xl border border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-600/10">
           <div className="flex items-center gap-3 mb-3">
             <CheckCircle className="h-6 w-6 text-green-400" />
-            <h3 className="text-lg font-semibold text-green-400">Spell Successfully Cast!</h3>
+            <h3 className="text-lg font-semibold text-green-400">Trigger Submitted!</h3>
           </div>
           <p className="text-green-300">
-            🎉 Your magical spell has been successfully cast into the ether! If your incantation was the first to be confirmed, 
-            you'll receive <span className="text-walawow-gold font-bold">5% of the treasure</span> as your enchanted reward.
+            🎉 Your trigger transaction was submitted successfully. If it was the first confirmed trigger, 
+            you'll receive <span className="text-walawow-gold font-bold">the configured share of the prize pool</span> as your reward.
           </p>
         </div>
       )}
 
-      {/* Spellcasting Instructions */}
+      {/* Trigger Instructions */}
       <div className="glass-card p-8 rounded-3xl border border-walawow-gold/30 bg-gradient-to-br from-walawow-gold/5 to-walawow-gold/10">
         <div className="flex items-center gap-3 mb-6">
           <Award className="h-8 w-8 text-walawow-gold" />
-          <h3 className="text-2xl font-bold text-white">Enchanter's Guide</h3>
+          <h3 className="text-2xl font-bold text-white">Trigger Guide</h3>
         </div>
         
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <h4 className="text-lg font-semibold text-walawow-gold mb-4">Preparation Rituals</h4>
+            <h4 className="text-lg font-semibold text-walawow-gold mb-4">Preparation Steps</h4>
             <ul className="space-y-3">
               {[
-                "Connect your magical wallet before the portal opens",
-                "Be prepared exactly at 12:00 UTC Friday",
-                "Use a wallet with low-latency connection to the magical realm",
-                "Consider setting a higher priority fee for faster spell confirmation"
+                "Connect your wallet before the window opens",
+                "Be ready right when the trigger window opens",
+                "Use a wallet with a low-latency connection",
+                "Consider setting a higher priority fee for faster confirmation"
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <div className="h-2 w-2 rounded-full bg-walawow-gold mt-2 flex-shrink-0"></div>
@@ -294,13 +321,13 @@ export default function TriggerPage() {
           </div>
           
           <div>
-            <h4 className="text-lg font-semibold text-walawow-purple-light mb-4">Victory Conditions</h4>
+            <h4 className="text-lg font-semibold text-walawow-purple-light mb-4">Winning Conditions</h4>
             <ul className="space-y-3">
               {[
-                "Only the first confirmed spell wins the 5% enchanted reward",
-                "Multiple spell attempts are allowed but only one can succeed",
-                "Network conditions affect spell confirmation speed",
-                "Monitor spell status on the magical explorer"
+                "Only the first confirmed trigger wins the configured reward share",
+                "Multiple trigger attempts are allowed but only one can succeed",
+                "Network conditions affect confirmation speed",
+                "Monitor transaction status on the explorer"
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <div className="h-2 w-2 rounded-full bg-walawow-purple-light mt-2 flex-shrink-0"></div>
@@ -314,11 +341,11 @@ export default function TriggerPage() {
         {/* Final Call to Action */}
         <div className="mt-8 pt-6 border-t border-walawow-gold/20 text-center">
           <p className="text-walawow-neutral-text-secondary mb-4">
-            Ready to become a master spellcaster?
+            Ready to become a top triggerer?
           </p>
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-walawow-purple/20 to-walawow-gold/20 border border-walawow-purple/30">
             <Zap className="h-5 w-5 text-walawow-gold" />
-            <span className="text-white font-semibold">Join the Weekly Spellcasting Competition</span>
+            <span className="text-white font-semibold">Join the Weekly Trigger Competition</span>
             <Sparkles className="h-5 w-5 text-walawow-purple-light" />
           </div>
         </div>
