@@ -71,9 +71,9 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
   const formatTokenAmount = (raw: string, decimals = 9) => {
     try {
       const amount = BigInt(raw)
-      if (amount === 0n) return '0'
+      if (amount === BigInt(0)) return '0'
 
-      const base = 10n ** BigInt(decimals)
+      const base = BigInt(10) ** BigInt(decimals)
       const whole = amount / base
       const fraction = amount % base
       const wholeText = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
