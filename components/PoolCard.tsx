@@ -81,7 +81,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
       const fraction = amount % base
       const wholeText = whole.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-      if (fraction === 0n) return wholeText
+      if (fraction === BigInt(0)) return wholeText
 
       const fractionText = fraction
         .toString()
