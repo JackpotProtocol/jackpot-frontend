@@ -1,5 +1,5 @@
 export const WALAWOW_API = {
-    BASE_URL: 'http://13.159.31.92:3002',
+    BASE_URL: 'http://3.113.171.167:3002',
     
     ENDPOINTS: {
         HEALTH: '/health',
