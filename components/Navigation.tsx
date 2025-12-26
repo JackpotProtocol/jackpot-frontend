@@ -7,10 +7,10 @@ import { useState } from 'react'
 
 const navigation = [
   { name: 'Dashboard', href: '/' },
-  { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Whitepaper', href: '/whitepaper' },
-  { name: 'Winners', href: '/winners' },
   { name: 'Web Trigger', href: '/trigger' },
+  { name: 'Winners', href: '/winners' },
+  { name: 'Whitepaper', href: '/whitepaper' },
+  { name: 'How It Works', href: '/how-it-works' },
   { name: 'Developer Docs', href: '/trigger-script' },
 ]
 
