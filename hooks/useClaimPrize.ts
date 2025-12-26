@@ -8,6 +8,7 @@ import { WALAWOW_PROTOCOL_ADDRESSES } from '../config/addresses'
 import { usePoolProgram } from '../utils/programs'
 import { getPoolAuthorityPDA, getPoolVaultPDA } from '../utils/programs'
 import { TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from '@solana/spl-token'
+import BN from 'bn.js'
 
 export interface ClaimPrizeParams {
   poolType: 'weekly' | 'monthly'
@@ -76,11 +77,15 @@ export function useClaimPrize() {
       console.log('Winner:', params.winner.toString())
       console.log('Vault:', vaultPDA.toString())
 
-      const claimBuilder = program.methods
+      const winnerLeafAmount = new BN(params.winnerLeafAmount.toString())
+      const cumulativeWeightUntil = new BN(params.cumulativeWeightUntil.toString())
+
+      // 使用 Anchor 调用 claim_prize 指令
+      const signature = await program.methods
         .claimPrize(
           params.winner,
-          params.winnerLeafAmount,
-          params.cumulativeWeightUntil,
+          winnerLeafAmount,
+          cumulativeWeightUntil,
           params.proof
         )
         .accounts({
@@ -92,9 +97,7 @@ export function useClaimPrize() {
           triggererTokenAccount: triggererTokenAccount,
           tokenProgram: TOKEN_PROGRAM_ID,
         })
-
-      // 使用 Anchor 调用 claim_prize 指令
-      const signature = await claimBuilder.rpc()
+        .rpc()
 
       console.log('⏳ Confirming transaction...', signature)
 
