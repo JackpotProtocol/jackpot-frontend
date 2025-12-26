@@ -7,7 +7,13 @@ import { useState } from 'react'
 import { WALAWOW_PROTOCOL_ADDRESSES } from '../config/addresses'
 import { usePoolProgram } from '../utils/programs'
 import { getPoolAuthorityPDA, getPoolVaultPDA } from '../utils/programs'
-import { TOKEN_PROGRAM_ID, getAssociatedTokenAddressSync } from '@solana/spl-token'
+import { 
+  ASSOCIATED_TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+  createAssociatedTokenAccountInstruction,
+  getAssociatedTokenAddressSync,
+} from '@solana/spl-token'
 import BN from 'bn.js'
 
 export interface ClaimPrizeParams {
@@ -56,10 +62,21 @@ export function useClaimPrize() {
       // 获取 USDC mint
       const usdcMint = new PublicKey(WALAWOW_PROTOCOL_ADDRESSES.USDC_MINT)
 
+      const mintInfo = await connection.getAccountInfo(usdcMint)
+      if (!mintInfo) {
+        throw new Error('USDC mint not found on chain.')
+      }
+      const tokenProgramId = mintInfo.owner.equals(TOKEN_2022_PROGRAM_ID)
+        ? TOKEN_2022_PROGRAM_ID
+        : TOKEN_PROGRAM_ID
+
       // 获取或创建 winner 的 USDC token account
       const winnerTokenAccount = getAssociatedTokenAddressSync(
         usdcMint,
-        params.winner
+        params.winner,
+        false,
+        tokenProgramId,
+        ASSOCIATED_TOKEN_PROGRAM_ID
       )
 
       // 获取或创建 triggerer 的 USDC token account (如果 last_triggerer 不是 default)
@@ -68,7 +85,9 @@ export function useClaimPrize() {
         triggererTokenAccount = getAssociatedTokenAddressSync(
           usdcMint,
           lastTriggerer,
-          true
+          true,
+          tokenProgramId,
+          ASSOCIATED_TOKEN_PROGRAM_ID
         )
       }
 
@@ -81,6 +100,37 @@ export function useClaimPrize() {
       const cumulativeWeightUntil = new BN(params.cumulativeWeightUntil.toString())
 
       // 使用 Anchor 调用 claim_prize 指令
+      const preInstructions = []
+      const winnerAccountInfo = await connection.getAccountInfo(winnerTokenAccount)
+      if (!winnerAccountInfo) {
+        preInstructions.push(
+          createAssociatedTokenAccountInstruction(
+            publicKey,
+            winnerTokenAccount,
+            params.winner,
+            usdcMint,
+            tokenProgramId,
+            ASSOCIATED_TOKEN_PROGRAM_ID
+          )
+        )
+      }
+
+      if (lastTriggerer && !lastTriggerer.equals(PublicKey.default)) {
+        const triggererAccountInfo = await connection.getAccountInfo(triggererTokenAccount)
+        if (!triggererAccountInfo) {
+          preInstructions.push(
+            createAssociatedTokenAccountInstruction(
+              publicKey,
+              triggererTokenAccount,
+              lastTriggerer,
+              usdcMint,
+              tokenProgramId,
+              ASSOCIATED_TOKEN_PROGRAM_ID
+            )
+          )
+        }
+      }
+
       const signature = await program.methods
         .claimPrize(
           params.winner,
@@ -88,6 +138,7 @@ export function useClaimPrize() {
           cumulativeWeightUntil,
           params.proof
         )
+        .preInstructions(preInstructions)
         .accounts({
           pool: poolAddress,
           poolAuthority: poolAuthorityPDA,
@@ -95,7 +146,7 @@ export function useClaimPrize() {
           usdcMintAccount: usdcMint,
           winnerTokenAccount: winnerTokenAccount,
           triggererTokenAccount: triggererTokenAccount,
-          tokenProgram: TOKEN_PROGRAM_ID,
+          tokenProgram: tokenProgramId,
         })
         .rpc()
 
