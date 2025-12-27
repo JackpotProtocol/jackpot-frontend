@@ -314,6 +314,8 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
             <span className={`font-bold ${isWithinTriggerWindow ? 'text-walawow-gold animate-pulse' : 'text-walawow-purple-light'}`}>
               {isWithinTriggerWindow
                 ? '⚡ OPEN NOW'
+                : poolInfo.poolState !== 'SnapshotLocked'
+                ? 'Awaiting next round'
                 : timeUntilTrigger.includes('Awaiting')
                 ? 'Awaiting next round'
                 : `in ${timeUntilTrigger}`}
@@ -341,7 +343,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
             </p>
           </div>
 
-          {(poolInfo.lastWinner || poolInfo.lastTriggerer || poolInfo.lastPrizeAmount > 0) && (
+          {(poolInfo.lastWinner || poolInfo.lastTriggerer || poolVaultBalance > 0) && (
             <div className="text-xs mt-3 pt-3 border-t border-walawow-neutral-border/50">
               <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 items-baseline">
                 <div className="text-walawow-neutral-text-secondary text-right">Current Winner:</div>
@@ -349,27 +351,25 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
                   {poolInfo.poolState === 'ReadyToClaim' ? formatAddress(poolInfo.lastWinner) : 'Pending'}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Last Round Winner:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Current Round Winner:</div>
                 <div className="text-walawow-gold-light font-mono">
                   {formatAddress(poolInfo.lastWinner)}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Last Round Prize:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Current Round Prize:</div>
                 <div className="text-walawow-gold-light font-semibold">
-                  ${formatUsdcAmount(poolInfo.lastPrizeAmount)}
+                  ${poolVaultBalance.toLocaleString()}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Last Round Triggerer:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Current Round Triggerer:</div>
                 <div className="text-walawow-gold-light font-mono">
                   {formatAddress(poolInfo.lastTriggerer)}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Last Round Trigger Reward:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Current Round Trigger Reward:</div>
                 <div className="text-walawow-gold-light font-semibold">
                   $
-                  {formatUsdcAmount(
-                    Math.floor((poolInfo.lastPrizeAmount * poolInfo.feeBpsTriggerer) / 10000)
-                  )}
+                  {(poolVaultBalance * (poolInfo.feeBpsTriggerer / 10000)).toLocaleString()}
                 </div>
               </div>
             </div>
