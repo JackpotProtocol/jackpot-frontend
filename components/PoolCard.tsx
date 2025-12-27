@@ -360,27 +360,22 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
           {(poolInfo.lastWinner || poolInfo.lastTriggerer || poolVaultBalance > 0) && (
             <div className="text-xs mt-3 pt-3 border-t border-walawow-neutral-border/50">
               <div className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 items-baseline">
-                <div className="text-walawow-neutral-text-secondary text-right">Current Winner:</div>
-                <div className="text-walawow-gold-light font-mono font-semibold">
+                <div className="text-walawow-neutral-text-secondary text-right">Winner:</div>
+                <div className="text-walawow-gold-light font-mono">
                   {poolInfo.poolState === 'ReadyToClaim' ? formatAddress(poolInfo.lastWinner) : 'Pending'}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Current Round Winner:</div>
-                <div className="text-walawow-gold-light font-mono">
-                  {formatAddress(poolInfo.lastWinner)}
-                </div>
-
-                <div className="text-walawow-neutral-text-secondary text-right">Current Round Prize:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Prize:</div>
                 <div className="text-walawow-gold-light font-semibold">
                   ${poolVaultBalance.toLocaleString()}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Current Round Triggerer:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Triggerer:</div>
                 <div className="text-walawow-gold-light font-mono">
                   {formatAddress(poolInfo.lastTriggerer)}
                 </div>
 
-                <div className="text-walawow-neutral-text-secondary text-right">Current Round Trigger Reward:</div>
+                <div className="text-walawow-neutral-text-secondary text-right">Trigger Reward:</div>
                 <div className="text-walawow-gold-light font-semibold">
                   $
                   {(poolVaultBalance * (poolInfo.feeBpsTriggerer / 10000)).toLocaleString()}
