@@ -113,7 +113,7 @@ export default function TriggerPage() {
         <div className={`glass-card p-8 rounded-3xl border ${weeklyEligibility.isWithinTriggerWindow ? 'border-walawow-gold/50 glow-gold' : 'border-walawow-neutral-border'}`}>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-1">Weekly Surprise</h3>
+              <h3 className="text-2xl font-bold text-white mb-1 notranslate" translate="no">Weekly Surprise</h3>
               <p className="text-walawow-neutral-text-secondary text-sm">Trigger the weekly draw</p>
             </div>
             <span className="bg-gradient-to-r from-walawow-purple to-walawow-purple-dark text-white px-4 py-2 rounded-full text-sm font-bold">
@@ -194,7 +194,7 @@ export default function TriggerPage() {
         <div className={`glass-card p-8 rounded-3xl border ${monthlyEligibility.isWithinTriggerWindow ? 'border-walawow-gold/50 glow-gold' : 'border-walawow-neutral-border'}`}>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h3 className="text-2xl font-bold text-white mb-1">Monthly Spectacular</h3>
+              <h3 className="text-2xl font-bold text-white mb-1 notranslate" translate="no">Monthly Spectacular</h3>
               <p className="text-walawow-neutral-text-secondary text-sm">Trigger the monthly draw</p>
             </div>
             <span className="bg-gradient-to-r from-walawow-gold to-walawow-gold-dark text-walawow-neutral-bg px-4 py-2 rounded-full text-sm font-bold">
