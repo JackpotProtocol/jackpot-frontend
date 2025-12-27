@@ -2,7 +2,7 @@
 'use client'
 import { useTriggerEligibility } from '../../hooks/useTriggerEligibility'
 import { usePoolInfo } from '../../hooks/usePoolInfo'
-import { Zap, Trophy, Clock, Target, CheckCircle, Sparkles, Timer, Award } from 'lucide-react'
+import { Zap, Trophy, Clock, Target, Sparkles, Timer, Award } from 'lucide-react'
 
 export default function TriggerPage() {
   const weeklyEligibility = useTriggerEligibility('weekly')
@@ -216,32 +216,6 @@ export default function TriggerPage() {
           </div>
         </div>
       </div>
-
-      {weeklyTrigger.success && (
-        <div className="glass-card p-6 rounded-3xl border border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-600/10">
-          <div className="flex items-center gap-3 mb-3">
-            <CheckCircle className="h-6 w-6 text-green-400" />
-            <h3 className="text-lg font-semibold text-green-400">Trigger Submitted!</h3>
-          </div>
-          <p className="text-green-300">
-            🎉 Your trigger transaction was submitted successfully. If it was the first confirmed trigger, 
-            you'll receive <span className="text-walawow-gold font-bold">the configured share of the prize pool</span> as your reward.
-          </p>
-        </div>
-      )}
-
-      {monthlyTrigger.success && (
-        <div className="glass-card p-6 rounded-3xl border border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-600/10">
-          <div className="flex items-center gap-3 mb-3">
-            <CheckCircle className="h-6 w-6 text-green-400" />
-            <h3 className="text-lg font-semibold text-green-400">Trigger Submitted!</h3>
-          </div>
-          <p className="text-green-300">
-            🎉 Your trigger transaction was submitted successfully. If it was the first confirmed trigger, 
-            you'll receive <span className="text-walawow-gold font-bold">the configured share of the prize pool</span> as your reward.
-          </p>
-        </div>
-      )}
 
       {/* Trigger Instructions */}
       <div className="glass-card p-8 rounded-3xl border border-walawow-gold/30 bg-gradient-to-br from-walawow-gold/5 to-walawow-gold/10">
