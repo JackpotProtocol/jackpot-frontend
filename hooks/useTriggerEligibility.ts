@@ -47,9 +47,11 @@ export function useTriggerEligibility(poolType: 'weekly' | 'monthly') {
       } else if (now < triggerWindowStart) {
         timeUntilTrigger = getTimeUntil(triggerWindowStart)
       } else if (poolInfo.drawPeriod > 0) {
-        nextTriggerTime = new Date(
-          triggerWindowStart.getTime() + poolInfo.drawPeriod * 1000
-        )
+        const periodMs = poolInfo.drawPeriod * 1000
+        const startMs = triggerWindowStart.getTime()
+        const nowMs = now.getTime()
+        const elapsedPeriods = Math.floor((nowMs - startMs) / periodMs) + 1
+        nextTriggerTime = new Date(startMs + elapsedPeriods * periodMs)
         timeUntilTrigger = getTimeUntil(nextTriggerTime)
       } else {
         nextTriggerTime = null
@@ -70,7 +72,14 @@ export function useTriggerEligibility(poolType: 'weekly' | 'monthly') {
     // 每秒更新一次倒计时
     const interval = setInterval(calculateEligibility, 1000)
     return () => clearInterval(interval)
-  }, [poolType, poolInfo.nextDrawTime, poolInfo.drawWindow, poolInfo.drawPeriod])
+  }, [
+    poolType,
+    poolInfo.nextDrawTime,
+    poolInfo.drawWindow,
+    poolInfo.drawPeriod,
+    poolInfo.poolState,
+    poolInfo.paused,
+  ])
 
   return eligibility
 }
