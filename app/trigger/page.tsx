@@ -12,7 +12,8 @@ export default function TriggerPage() {
   const monthlyEligibility = useTriggerEligibility('monthly')
   const { poolInfo: weeklyPoolInfo } = usePoolInfo('weekly')
   const { poolInfo: monthlyPoolInfo } = usePoolInfo('monthly')
-  const { triggerDraw, triggering, error, success } = useDrawTrigger()
+  const weeklyTrigger = useDrawTrigger('weekly')
+  const monthlyTrigger = useDrawTrigger('monthly')
 
   const formatUtcDate = (date: Date | null) => {
     if (!date) return 'Schedule not available'
@@ -154,10 +155,10 @@ export default function TriggerPage() {
 
             {/* Cast Button */}
             <button
-              onClick={() => triggerDraw('weekly')}
-              disabled={!publicKey || triggering || !weeklyEligibility.isWithinTriggerWindow}
+              onClick={() => weeklyTrigger.triggerDraw()}
+              disabled={!publicKey || weeklyTrigger.triggering || !weeklyEligibility.isWithinTriggerWindow}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
-                !publicKey || triggering || !weeklyEligibility.isWithinTriggerWindow
+                !publicKey || weeklyTrigger.triggering || !weeklyEligibility.isWithinTriggerWindow
                   ? 'bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary cursor-not-allowed'
                   : weeklyEligibility.isWithinTriggerWindow
                   ? 'btn-gold hover:scale-[1.02] hover:shadow-lg'
@@ -169,7 +170,7 @@ export default function TriggerPage() {
                   <Sparkles className="h-5 w-5" />
                   Connect Wallet to Trigger
                 </div>
-              ) : triggering ? (
+              ) : weeklyTrigger.triggering ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Triggering Weekly Draw...
@@ -235,10 +236,10 @@ export default function TriggerPage() {
 
             {/* Cast Button */}
             <button
-              onClick={() => triggerDraw('monthly')}
-              disabled={!publicKey || triggering || !monthlyEligibility.isWithinTriggerWindow}
+              onClick={() => monthlyTrigger.triggerDraw()}
+              disabled={!publicKey || monthlyTrigger.triggering || !monthlyEligibility.isWithinTriggerWindow}
               className={`w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 ${
-                !publicKey || triggering || !monthlyEligibility.isWithinTriggerWindow
+                !publicKey || monthlyTrigger.triggering || !monthlyEligibility.isWithinTriggerWindow
                   ? 'bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary cursor-not-allowed'
                   : monthlyEligibility.isWithinTriggerWindow
                   ? 'btn-gold hover:scale-[1.02] hover:shadow-lg'
@@ -250,7 +251,7 @@ export default function TriggerPage() {
                   <Sparkles className="h-5 w-5" />
                   Connect Wallet to Cast
                 </div>
-              ) : triggering ? (
+              ) : monthlyTrigger.triggering ? (
                 <div className="flex items-center justify-center gap-2">
                   <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                   Triggering Monthly Draw...
@@ -272,17 +273,40 @@ export default function TriggerPage() {
       </div>
 
       {/* Status Messages */}
-      {error && (
+      {weeklyTrigger.error && (
         <div className="glass-card p-6 rounded-3xl border border-red-500/30 bg-gradient-to-r from-red-500/10 to-red-600/10">
           <div className="flex items-center gap-3 mb-3">
             <AlertTriangle className="h-6 w-6 text-red-400" />
             <h3 className="text-lg font-semibold text-red-400">Trigger Error</h3>
           </div>
-          <p className="text-red-300">{error}</p>
+          <p className="text-red-300">Weekly: {weeklyTrigger.error}</p>
         </div>
       )}
 
-      {success && (
+      {monthlyTrigger.error && (
+        <div className="glass-card p-6 rounded-3xl border border-red-500/30 bg-gradient-to-r from-red-500/10 to-red-600/10">
+          <div className="flex items-center gap-3 mb-3">
+            <AlertTriangle className="h-6 w-6 text-red-400" />
+            <h3 className="text-lg font-semibold text-red-400">Trigger Error</h3>
+          </div>
+          <p className="text-red-300">Monthly: {monthlyTrigger.error}</p>
+        </div>
+      )}
+
+      {weeklyTrigger.success && (
+        <div className="glass-card p-6 rounded-3xl border border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-600/10">
+          <div className="flex items-center gap-3 mb-3">
+            <CheckCircle className="h-6 w-6 text-green-400" />
+            <h3 className="text-lg font-semibold text-green-400">Trigger Submitted!</h3>
+          </div>
+          <p className="text-green-300">
+            🎉 Your trigger transaction was submitted successfully. If it was the first confirmed trigger, 
+            you'll receive <span className="text-walawow-gold font-bold">the configured share of the prize pool</span> as your reward.
+          </p>
+        </div>
+      )}
+
+      {monthlyTrigger.success && (
         <div className="glass-card p-6 rounded-3xl border border-green-500/30 bg-gradient-to-r from-green-500/10 to-emerald-600/10">
           <div className="flex items-center gap-3 mb-3">
             <CheckCircle className="h-6 w-6 text-green-400" />
