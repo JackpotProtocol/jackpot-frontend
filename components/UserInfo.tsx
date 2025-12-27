@@ -13,11 +13,12 @@ interface UserInfoProps {
 export default function UserInfo({ publicKey }: UserInfoProps) {
   const { userBalance, loading: balanceLoading, error: balanceError } = useUserBalance()
   const [totalSupply, setTotalSupply] = useState(0)
+  const [snapshotWeight, setSnapshotWeight] = useState(0)
   const [loadingSupply, setLoadingSupply] = useState(true)
 
   // 计算权重和概率
-  const userWeight = userBalance // 权重 = 余额
-  const winProbability = totalSupply > 0 ? (userBalance / totalSupply) * 100 : 0
+  const userWeight = snapshotWeight
+  const winProbability = totalSupply > 0 ? (snapshotWeight / totalSupply) * 100 : 0
   
   // 生成用户头像颜色
   const userColor = `#${publicKey.toString().slice(0, 6)}`
@@ -44,6 +45,28 @@ export default function UserInfo({ publicKey }: UserInfoProps) {
 
     fetchTotalSupply()
   }, [])
+
+  useEffect(() => {
+    const fetchSnapshotWeight = async () => {
+      if (!publicKey) return
+      try {
+        const response = await fetch(
+          `${WALAWOW_API.BASE_URL}${WALAWOW_API.ENDPOINTS.SNAPSHOT_HOLDER}?owner=${publicKey.toBase58()}`
+        )
+        if (!response.ok) throw new Error('Failed to fetch holder snapshot weight')
+        const payload = await response.json()
+        const weightRaw = payload?.data?.weight ?? '0'
+        const weight = Number(weightRaw)
+        const weightUi = Number.isFinite(weight) ? weight / 1e9 : 0
+        setSnapshotWeight(weightUi)
+      } catch (err) {
+        console.error('Error fetching snapshot weight:', err)
+        setSnapshotWeight(0)
+      }
+    }
+
+    fetchSnapshotWeight()
+  }, [publicKey])
 
   // 骨架屏加载状态
   if (balanceLoading || loadingSupply) {
@@ -108,24 +131,7 @@ export default function UserInfo({ publicKey }: UserInfoProps) {
 
       {/* 核心数据卡片 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* WALAWOW 余额 */}
-        <div className="glass-card p-5 hover:scale-[1.02] transition-all duration-300 border border-walawow-neutral-border/50">
-          <div className="flex items-center justify-between mb-4">
-            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-walawow-purple/30 to-walawow-purple/10 flex items-center justify-center">
-              <Coins className="h-6 w-6 text-walawow-purple-light" />
-            </div>
-            <span className="text-xs font-medium px-2 py-1 rounded bg-walawow-purple/10 text-walawow-purple-light">
-              Primary
-            </span>
-          </div>
-          <div className="data-value mb-1">{userBalance.toLocaleString()}</div>
-          <div className="data-label">WALAWOW Balance</div>
-          <div className="text-xs text-walawow-neutral-text-secondary mt-2">
-            Your tickets to surprise draws
-          </div>
-        </div>
-
-        {/* 投票权重 */}
+        {/* Snapshot 权重 */}
         <div className="glass-card p-5 hover:scale-[1.02] transition-all duration-300 border border-walawow-neutral-border/50">
           <div className="flex items-center justify-between mb-4">
             <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-walawow-gold/30 to-walawow-gold/10 flex items-center justify-center">
@@ -136,9 +142,26 @@ export default function UserInfo({ publicKey }: UserInfoProps) {
             </span>
           </div>
           <div className="data-value mb-1">{userWeight.toLocaleString()}</div>
-          <div className="data-label">Voting Weight</div>
+          <div className="data-label">Snapshot Weight</div>
           <div className="text-xs text-walawow-neutral-text-secondary mt-2">
-            Influence in community decisions
+            Your eligible weight for draws
+          </div>
+        </div>
+
+        {/* WALAWOW 余额 */}
+        <div className="glass-card p-5 hover:scale-[1.02] transition-all duration-300 border border-walawow-neutral-border/50">
+          <div className="flex items-center justify-between mb-4">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-walawow-purple/30 to-walawow-purple/10 flex items-center justify-center">
+              <Coins className="h-6 w-6 text-walawow-purple-light" />
+            </div>
+            <span className="text-xs font-medium px-2 py-1 rounded bg-walawow-purple/10 text-walawow-purple-light">
+              Balance
+            </span>
+          </div>
+          <div className="data-value mb-1">{userBalance.toLocaleString()}</div>
+          <div className="data-label">WALAWOW Balance</div>
+          <div className="text-xs text-walawow-neutral-text-secondary mt-2">
+            Current wallet balance
           </div>
         </div>
 
