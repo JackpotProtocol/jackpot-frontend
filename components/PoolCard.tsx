@@ -21,7 +21,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
   const { poolVaultBalance, stagingVaultBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
   const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger(poolType)
-  const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
+  const { canTrigger, timeUntilTrigger, isWithinTriggerWindow, nextTriggerTime } = useTriggerEligibility(poolType)
   const { claimPrize, claiming, error: claimError, success: claimSuccess, canClaim } = useClaimPrize()
   const { publicKey } = useWallet()
   const [claimFormError, setClaimFormError] = useState<string | null>(null)
@@ -66,6 +66,20 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
       timeZone: 'UTC',
     })
     return `${label} UTC`
+  }
+
+  const formatUtcDate = (date: Date | null) => {
+    if (!date) return 'Schedule not available'
+    return (
+      date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+        timeZone: 'UTC',
+      }) + ' UTC'
+    )
   }
 
   const formatTokenAmount = (raw: string, decimals = 9) => {
@@ -302,9 +316,9 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4 text-walawow-neutral-text-secondary" />
-              <span className="data-label">Next Draw</span>
+              <span className="data-label">Next Draw Time (UTC)</span>
             </div>
-            <span className="text-white font-medium">{formatNextDrawTime(poolInfo.nextDrawTime)}</span>
+            <span className="text-white font-medium">{formatUtcDate(nextTriggerTime)}</span>
           </div>
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
