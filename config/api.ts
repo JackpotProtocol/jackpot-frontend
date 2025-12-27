@@ -5,6 +5,7 @@ export const WALAWOW_API = {
         HEALTH: '/health',
         CONTRACTS: '/api/contracts',
         STATUS: '/api/status',
+        STATS: '/api/stats',
         LATEST_SNAPSHOT: '/api/snapshot/latest',
         CLAIM_PROOF: '/api/claim',
         LATEST_WINNER: '/api/winner/latest'
