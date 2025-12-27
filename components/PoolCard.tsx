@@ -110,6 +110,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
     if (!publicKey) return 'Connect Wallet to Trigger'
     if (triggering) return 'Triggering Draw...'
     if (!isWithinTriggerWindow) {
+      if (poolInfo.poolState !== 'SnapshotLocked') return 'Awaiting next round'
       return timeUntilTrigger.includes('Awaiting') ? 'Awaiting next round' : `Opens in ${timeUntilTrigger}`
     }
     const rewardPct = (poolInfo.feeBpsTriggerer / 100).toFixed(2)
