@@ -345,14 +345,22 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
             </p>
           </div>
 
-          {/* 上次获胜者 */}
-          {poolInfo.lastWinner && (
-            <div className="text-xs text-center mt-3 pt-3 border-t border-walawow-neutral-border/50">
-              <p className="text-walawow-neutral-text-secondary">
-                Last winner: <span className="text-walawow-gold-light font-mono">
-                  {poolInfo.lastWinner.slice(0, 4)}...{poolInfo.lastWinner.slice(-4)}
-                </span>
-              </p>
+          {(poolInfo.lastWinner || poolInfo.lastTriggerer) && (
+            <div className="text-xs text-center mt-3 pt-3 border-t border-walawow-neutral-border/50 space-y-1">
+              {poolInfo.lastTriggerer && (
+                <p className="text-walawow-neutral-text-secondary">
+                  Triggerer: <span className="text-walawow-gold-light font-mono">
+                    {poolInfo.lastTriggerer.slice(0, 4)}...{poolInfo.lastTriggerer.slice(-4)}
+                  </span>
+                </p>
+              )}
+              {poolInfo.lastWinner && (
+                <p className="text-walawow-neutral-text-secondary">
+                  Winner: <span className="text-walawow-gold-light font-mono">
+                    {poolInfo.lastWinner.slice(0, 4)}...{poolInfo.lastWinner.slice(-4)}
+                  </span>
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -363,7 +371,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
             className={`w-full py-3 rounded-xl font-semibold transition-all ${
               !publicKey || claiming || !canAttemptClaim
                 ? 'bg-walawow-neutral-card border border-walawow-neutral-border text-walawow-neutral-text-secondary cursor-not-allowed'
-                : 'btn-outline hover:scale-[1.01]'
+                : 'btn-gold hover:shadow-lg hover:scale-[1.01]'
             }`}
             onClick={handleClaim}
             disabled={!publicKey || claiming || !canAttemptClaim}
