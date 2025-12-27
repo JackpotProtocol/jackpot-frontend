@@ -20,7 +20,7 @@ interface PoolCardProps {
 export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' }: PoolCardProps) {
   const { poolVaultBalance, stagingVaultBalance, loading: balanceLoading, error: balanceError } = usePoolBalance(poolType)
   const { poolInfo, loading: infoLoading, error: infoError } = usePoolInfo(poolType)
-  const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger()
+  const { triggerDraw, triggering, error: triggerError, success: triggerSuccess } = useDrawTrigger(poolType)
   const { canTrigger, timeUntilTrigger, isWithinTriggerWindow } = useTriggerEligibility(poolType)
   const { claimPrize, claiming, error: claimError, success: claimSuccess, canClaim } = useClaimPrize()
   const { publicKey } = useWallet()
@@ -313,7 +313,7 @@ export default function PoolCard({ title, poolType, nextDraw, accent = 'purple' 
         <div className="pt-4">
           <button 
             className={`w-full py-3.5 rounded-xl font-semibold transition-all ${getTriggerButtonStyle()}`}
-            onClick={() => triggerDraw(poolType)}
+            onClick={() => triggerDraw()}
             disabled={!publicKey || triggering || !isWithinTriggerWindow}
           >
             {getTriggerButtonText()}
